@@ -8,7 +8,8 @@ var config = {
   ACCESS_KEY: '3ZUTdXYFVHSP3i1xr0b28YiT5zpPr2J7XGtAnNUa',
   SECRET_KEY: 'EjeAdfnjLX6Ij9TT7eVQoDpvxpAuz6lYHtFACNzH',
   bucket: 'regeneration',
-  filePath: '../img/'
+  filePath: '../img/',
+  download: 'http://oq7eluo6z.bkt.clouddn.com/'
 };
 
 module.exports = config;

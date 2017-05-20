@@ -2,11 +2,13 @@ const Test = require('../module/test');
 
 var findAll = async () => {
 	let res = await Test.findAll();
+    console.log(res);
     return res;
 };
 
 var findOne = async (filter) => {
     let res = await Test.findOne({where: filter});
+    console.log(res);
     return res;
 };
 

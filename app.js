@@ -1,44 +1,41 @@
-var app = require('koa')()
-  , koa = require('koa-router')()
-  , logger = require('koa-logger')
-  , json = require('koa-json')
-  , views = require('koa-views')
-  , onerror = require('koa-onerror');
+const Koa = require('koa');
+const app = new Koa();
+const views = require('koa-views');
+const json = require('koa-json');
+const onerror = require('koa-onerror');
+const bodyparser = require('koa-bodyparser')();
+const logger = require('koa-logger');
+const koaBody = require('koa-body');
 
-var test = require('./orm/module/test');
+const test = require('./orm/module/test');
 
-var index = require('./routes/index');
-var users = require('./routes/users');
+const index = require('./routes/index');
+const users = require('./routes/users');
 
+// error handler
+onerror(app);
 
-
-// global middlewares
-app.use(views('views', {
-  root: __dirname + '/views',
-  default: 'jade'
-}));
-app.use(require('koa-bodyparser')());
+// middlewares
+app.use(koaBody({multipart: true}));
+// app.use(bodyparser);
 app.use(json());
 app.use(logger());
-
-app.use(function *(next){
-  var start = new Date;
-  yield next;
-  var ms = new Date - start;
-  console.log('%s %s - %s', this.method, this.url, ms);
-});
-
 app.use(require('koa-static')(__dirname + '/public'));
 
-// routes definition
-koa.use('/', index.routes(), index.allowedMethods());
-koa.use('/users', users.routes(), users.allowedMethods());
+app.use(views(__dirname + '/views', {
+  extension: 'pug'
+}));
 
-// mount root routes  
-app.use(koa.routes());
-
-app.on('error', function(err, ctx){
-  logger.error('server error', err, ctx);
+// logger
+app.use(async (ctx, next) => {
+  const start = new Date();
+  await next();
+  const ms = new Date() - start;
+  console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
 });
+
+// routes
+app.use(index.routes(), index.allowedMethods());
+app.use(users.routes(), users.allowedMethods());
 
 module.exports = app;

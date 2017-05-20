@@ -1,13 +1,27 @@
-var router = require('koa-router')();
-var testRepository = require('../orm/repository/testRepository');
-var upload = require('../utils/qiniu');
+const router = require('koa-router')();
 
-upload('kotori.jpg');
+const TestRepository = require('../orm/repository/testRepository');
+const uploadFile = require('../utils/qiniu');
 
-router.get('/', function *(next) {
-  yield this.render('index', {
-    title: 'Hello World Koa!'
-  });
+router.get('/', async (ctx, next) => {
+  await ctx.render('index', {
+    title: 'Hello Koa 2!'
+  })
 });
 
-module.exports = router;
+router.get('/string', async (ctx, next) => {
+  ctx.body = 'koa2 string'
+});
+
+router.get('/json', async (ctx, next) => {
+  ctx.body = {
+    title: 'koa2 json'
+  }
+});
+
+router.post('/save', async (ctx, next) => {
+  var file =ctx.request.body.files.test;
+  uploadFile(file.name, file.path);
+});
+
+module.exports = router
