@@ -2,20 +2,24 @@ const Test = require('../module/test');
 
 var findAll = async () => {
 	let res = await Test.findAll();
-    console.log(res);
-    return res;
+    var ret = [];
+    for(var x in res) {
+        var data = res[x].dataValues;
+        var resData = {'id': data.id, 'name': data.name, 'url': data.url};
+        ret.push(resData);
+    }
+    return ret;
 };
 
 var findOne = async (filter) => {
     let res = await Test.findOne({where: filter});
-    console.log(res);
     return res;
 };
 
-var create = async (name, age) =>{
+var create = async (name, url) =>{
     return await Test.create({
         name: name,
-        age: age
+        url: url
     });
 };
 

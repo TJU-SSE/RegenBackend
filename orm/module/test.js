@@ -7,7 +7,8 @@ var Test = sequlize.define('test', {
         primaryKey: true,
         autoIncrement: true
     },
-    name: Sequlize.STRING(100),
+    name: Sequlize.STRING(1000),
+    url: Sequlize.STRING(1000),
     age: Sequlize.BIGINT
 }, {
     freezeTableName: true,

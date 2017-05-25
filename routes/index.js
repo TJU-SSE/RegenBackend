@@ -1,16 +1,19 @@
 const router = require('koa-router')();
 
 const TestRepository = require('../orm/repository/testRepository');
-const uploadFile = require('../utils/qiniu');
+const Qiniu = require('../utils/qiniu');
 
-router.get('/', async (ctx, next) => {
+router.get('/index', async (ctx, next) => {
+    let imgs = await TestRepository.findAll();
   await ctx.render('index', {
-    title: 'Hello Koa 2!'
+    title: 'Regeneration',
+    imgs: imgs
   })
 });
 
 router.get('/string', async (ctx, next) => {
-  ctx.body = 'koa2 string'
+  ctx.body = 'koa2 string';
+  ctx.redirect('index');
 });
 
 router.get('/json', async (ctx, next) => {
@@ -20,8 +23,24 @@ router.get('/json', async (ctx, next) => {
 });
 
 router.post('/save', async (ctx, next) => {
-  var file =ctx.request.body.files.test;
-  uploadFile(file.name, file.path);
+  var file = ctx.request.body.files.test;
+  await new Promise((resolve, reject) => {
+    Qiniu.uploadFile(file.name, file.path, function () {
+      resolve();
+    });
+  });
+  ctx.redirect('index');
 });
 
-module.exports = router
+router.post('/delete', async (ctx, next) => {
+  var img_id = ctx.request.body.fields.id;
+  await new Promise((resolve, reject) => {
+    Qiniu.deleteFile(img_id, function () {
+      resolve();
+    });
+  });
+  ctx.redirect('index');
+});
+
+
+module.exports = router;
