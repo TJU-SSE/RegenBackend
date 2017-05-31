@@ -13,6 +13,7 @@ const test = require('./orm/module/test');
 
 const index = require('./routes/index');
 const users = require('./routes/users');
+const checkAuthority = require('./middleware/authority');
 
 // error handler
 onerror(app);
@@ -46,8 +47,13 @@ app.use(async (ctx, next) => {
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
 });
 
+// authority
+app.use(checkAuthority());
+
+
 // routes
 app.use(index.routes(), index.allowedMethods());
 app.use(users.routes(), users.allowedMethods());
+
 
 module.exports = app;

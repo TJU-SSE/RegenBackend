@@ -3,17 +3,34 @@ const router = require('koa-router')();
 const TestRepository = require('../orm/repository/testRepository');
 const Qiniu = require('../utils/qiniu');
 
-router.get('/index', async (ctx, next) => {
-    let imgs = await TestRepository.findAll();
+router.get('/admin/index', async (ctx, next) => {
+  let imgs = await TestRepository.findAll();
   await ctx.render('index', {
     title: 'Regeneration',
     imgs: imgs
   })
 });
 
+router.get('/test', async (ctx, next) => {
+  await ctx.cookies.set('sessionId', 'abc');
+  await ctx.render('index', {
+    title: 'Regeneration',
+    imgs: {}
+  });
+});
+
+router.get('/login', async (ctx, next) => {
+  await ctx.render('login', {});
+});
+
+router.get('/logout', async (ctx, next) => {
+  await ctx.cookies.set('sessionId', '');
+  await ctx.render('logout');
+});
+
 router.get('/string', async (ctx, next) => {
   ctx.body = 'koa2 string';
-  ctx.redirect('index');
+  ctx.redirect('/admin/index');
 });
 
 router.get('/json', async (ctx, next) => {
@@ -41,6 +58,5 @@ router.post('/delete', async (ctx, next) => {
   });
   ctx.redirect('index');
 });
-
 
 module.exports = router;
