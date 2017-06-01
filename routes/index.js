@@ -11,34 +11,6 @@ router.get('/admin/index', async (ctx, next) => {
   })
 });
 
-router.get('/test', async (ctx, next) => {
-  await ctx.cookies.set('sessionId', 'abc');
-  await ctx.render('index', {
-    title: 'Regeneration',
-    imgs: {}
-  });
-});
-
-router.get('/login', async (ctx, next) => {
-  await ctx.render('login', {});
-});
-
-router.get('/logout', async (ctx, next) => {
-  await ctx.cookies.set('sessionId', '');
-  await ctx.render('logout');
-});
-
-router.get('/string', async (ctx, next) => {
-  ctx.body = 'koa2 string';
-  ctx.redirect('/admin/index');
-});
-
-router.get('/json', async (ctx, next) => {
-  ctx.body = {
-    title: 'koa2 json'
-  }
-});
-
 router.post('/save', async (ctx, next) => {
   var file = ctx.request.body.files.test;
   await new Promise((resolve, reject) => {
@@ -46,7 +18,7 @@ router.post('/save', async (ctx, next) => {
       resolve();
     });
   });
-  ctx.redirect('index');
+  ctx.redirect('/admin/index');
 });
 
 router.post('/delete', async (ctx, next) => {
@@ -56,7 +28,7 @@ router.post('/delete', async (ctx, next) => {
       resolve();
     });
   });
-  ctx.redirect('index');
+  ctx.redirect('/admin/index');
 });
 
 module.exports = router;
