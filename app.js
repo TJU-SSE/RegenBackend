@@ -13,9 +13,13 @@ const test = require('./orm/module/test');
 
 const index = require('./routes/index');
 const users = require('./routes/users');
+const news = require('./routes/news');
 const redis = require('./routes/redis');
 
 const checkAuthority = require('./middleware/authority');
+
+const initDB = require('./orm/initDB');
+initDB();
 
 // error handler
 onerror(app);
@@ -50,12 +54,13 @@ app.use(async (ctx, next) => {
 });
 
 // authority
-app.use(checkAuthority());
+// app.use(checkAuthority());
 
 
 // routes
 app.use(index.routes(), index.allowedMethods());
 app.use(users.routes(), users.allowedMethods());
+app.use(news.routes(), news.allowedMethods());
 // app.use(redis.routes(), redis.allowedMethods());
 
 

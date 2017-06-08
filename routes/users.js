@@ -1,6 +1,8 @@
 const router = require('koa-router')();
 const UserRepository = require('../orm/repository/userRepository');
 const SessionRepository = require('../orm/repository/sessionRepository');
+const News = require('../orm/module/news');
+const Img = require('../orm/module/img');
 
 // router.prefix('/users')
 

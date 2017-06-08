@@ -12,8 +12,4 @@ var Session = sequlize.define('session', {
     timestamps: false,
 });
 
-Session.sync().then(function () {
-    console.log("create test success");
-});
-
 module.exports = Session;

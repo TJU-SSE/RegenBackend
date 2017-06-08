@@ -12,8 +12,4 @@ var User = sequlize.define('user', {
     timestamps: false,
 });
 
-User.sync().then(function () {
-    console.log("create user success");
-});
-
 module.exports = User;

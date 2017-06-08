@@ -12,8 +12,4 @@ var Img = sequlize.define('img', {
     timestamps: false,
 });
 
-Img.sync().then(function () {
-    console.log("create img success");
-});
-
 module.exports = Img;

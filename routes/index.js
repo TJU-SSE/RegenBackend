@@ -1,6 +1,7 @@
 const router = require('koa-router')();
 
 const ImgRepository = require('../orm/repository/imgRepository');
+const NewsRepository = require('../orm/repository/newsRepository');
 const Qiniu = require('../utils/qiniu');
 
 router.get('/admin/index', async (ctx, next) => {

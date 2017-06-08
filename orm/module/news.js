@@ -1,18 +1,18 @@
 const Sequlize = require('sequelize');
 const sequlize = require('../sequelize');
 
-var Test = sequlize.define('test', {
+var News = sequlize.define('news', {
     id: {
         type: Sequlize.BIGINT,
         primaryKey: true,
         autoIncrement: true
     },
-    name: Sequlize.STRING(1000),
-    url: Sequlize.STRING(1000),
-    age: Sequlize.BIGINT
+    title: Sequlize.STRING(100),
+    writer: Sequlize.STRING(100),
+    content: Sequlize.STRING(10000)
 }, {
     freezeTableName: true,
-    timestamps: false,
+    timestamps: true,
 });
 
-module.exports = Test;
+module.exports = News;
