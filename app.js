@@ -13,6 +13,8 @@ const test = require('./orm/module/test');
 
 const index = require('./routes/index');
 const users = require('./routes/users');
+const redis = require('./routes/redis');
+
 const checkAuthority = require('./middleware/authority');
 
 // error handler
@@ -54,6 +56,7 @@ app.use(checkAuthority());
 // routes
 app.use(index.routes(), index.allowedMethods());
 app.use(users.routes(), users.allowedMethods());
+// app.use(redis.routes(), redis.allowedMethods());
 
 
 module.exports = app;

@@ -48,4 +48,4 @@ router.post('/register', async (ctx, next) => {
   }
 });
 
-module.exports = router
+module.exports = router;

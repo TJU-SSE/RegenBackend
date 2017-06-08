@@ -7,13 +7,13 @@
 
 <body>
   <p>Hello world!</p>
-  <form action="http://localhost:3000/save" method="POST" ENCTYPE="multipart/form-data">
+  <form action="http://localhost:3000/admin/save" method="POST" ENCTYPE="multipart/form-data">
     <input type="file" name="test">
     <input type="submit" name="submit" >
   </form>
   {% for img in imgs %}
   <img src="{{img.url}}" alt="">
-  <form action="http://localhost:3000/delete" method="POST" ENCTYPE="multipart/form-data">
+  <form action="http://localhost:3000/admin/delete" method="POST" ENCTYPE="multipart/form-data">
     <input type="hidden" name="id" value="{{img.id}}">
     <input type="submit" value="删除" >
   </form>
