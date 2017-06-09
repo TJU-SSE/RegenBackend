@@ -1,4 +1,4 @@
-const News = require('../module/news');
+const News = require('../model/news');
 const Qiniu = require('../../utils/qiniu');
 
 let findAll = async () => {

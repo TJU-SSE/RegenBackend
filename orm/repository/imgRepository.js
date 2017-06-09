@@ -1,4 +1,4 @@
-const Img = require('../module/img');
+const Img = require('../model/img');
 
 var findAll = async () => {
     let res = await Img.findAll();

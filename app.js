@@ -9,8 +9,6 @@ const koaBody = require('koa-body');
 
 const templating = require('./middleware/templating');
 
-const test = require('./orm/module/test');
-
 const index = require('./routes/index');
 const users = require('./routes/users');
 const news = require('./routes/news');

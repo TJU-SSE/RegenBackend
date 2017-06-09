@@ -1,8 +1,8 @@
-const Img = require('./module/img');
-const News = require('./module/news');
-const Session = require('./module/session');
-const Test = require('./module/test');
-const User = require('./module/user');
+const Img = require('./model/img');
+const News = require('./model/news');
+const Session = require('./model/session');
+const Test = require('./model/test');
+const User = require('./model/user');
 
 function syncAll() {
     Img.sync().then(function () {

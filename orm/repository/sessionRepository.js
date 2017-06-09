@@ -1,4 +1,4 @@
-const Session = require('../module/session');
+const Session = require('../model/session');
 
 var findAll = async () => {
     let res = await Session.findAll();
