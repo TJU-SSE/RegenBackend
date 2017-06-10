@@ -1,8 +1,5 @@
 const router = require('koa-router')();
 
-const ImgRepository = require('../orm/repository/imgRepository');
-const NewsRepository = require('../orm/repository/newsRepository');
-const Qiniu = require('../utils/qiniu');
 const NewsService = require('../service/newsService');
 const ResponseService = require('../service/responseService');
 
@@ -10,7 +7,7 @@ const ResponseService = require('../service/responseService');
 router.prefix('/admin/news');
 
 router.get('/show', async (ctx, next) => {
-    let news = await NewsService.findOne({id: 29});
+    let news = await NewsService.findOne({id: 30});
     let ret = await NewsService.createNewsViewModel(news);
     await ctx.render('user_create', {news: ret});
 });

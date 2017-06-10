@@ -1,38 +1,39 @@
 const News = require('../model/news');
 const Qiniu = require('../../utils/qiniu');
 
-let findAll = async () => {
+let pub = {};
+
+pub.findAll = async () => {
     let res = await News.findAll();
     return res;
 };
 
-let findOne = async (filter) => {
+pub.findOne = async (filter) => {
     let res = await News.findOne({where: filter});
     return res;
 };
 
-let create = async (title, writer, content, img) =>{
+pub.create = async (title, writer, content, img) =>{
     let news = await News.create({ title: title, writer: writer, content: content});
     news.setCoverImg(img);
     return news;
 };
 
-let updateImg = async (news, img) => {
+pub.updateImg = async (news, img) => {
     let oldImg = await news.getCoverImg();
-    console.log(oldImg);
     await Qiniu.deleteFile(oldImg);
     news.setCoverImg(img);
 };
 
-let update = async (news, title, writer, content) => {
+pub.update = async (news, title, writer, content) => {
     if(title) news.title = title;
     if(writer) news.writer = writer;
     if(content) news.content = content;
     await news.save();
 };
 
-let deleteOne = async (filter) => {
-    let news = await findOne(filter);
+pub.deleteOne = async (filter) => {
+    let news = await pub.findOne(filter);
     if (news) {
         let img = await news.getCoverImg();
         await Qiniu.deleteFile(img);
@@ -40,11 +41,4 @@ let deleteOne = async (filter) => {
     }
 };
 
-module.exports = {
-    create: create,
-    findAll: findAll,
-    findOne: findOne,
-    update: update,
-    updateImg: updateImg,
-    deleteOne: deleteOne
-};
+module.exports = pub;

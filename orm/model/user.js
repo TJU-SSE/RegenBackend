@@ -1,7 +1,7 @@
 const Sequlize = require('sequelize');
 const sequlize = require('../sequelize');
 
-var User = sequlize.define('user', {
+let User = sequlize.define('user', {
     username: {
         type: Sequlize.STRING(100),
         primaryKey: true

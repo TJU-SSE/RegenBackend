@@ -1,7 +1,7 @@
 const Sequlize = require('sequelize');
 const sequlize = require('../sequelize');
 
-var Test = sequlize.define('test', {
+let Test = sequlize.define('test', {
     id: {
         type: Sequlize.BIGINT,
         primaryKey: true,

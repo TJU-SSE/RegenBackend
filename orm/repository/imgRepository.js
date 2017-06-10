@@ -1,29 +1,26 @@
 const Img = require('../model/img');
 
-var findAll = async () => {
+let pub = {};
+
+pub.findAll = async () => {
     let res = await Img.findAll();
     return res;
 };
 
-var findOne = async (filter) => {
+pub.findOne = async (filter) => {
     let res = await Img.findOne({where: filter});
     return res;
 };
 
-var create = async (id, url) =>{
+pub.create = async (id, url) =>{
     return await Img.create({
         id: id,
         url: url
     });
 };
 
-var deleteOne = async (test) => {
-    await test.destroy();
+pub.deleteOne = async (img) => {
+    await img.destroy();
 };
 
-module.exports = {
-    create: create,
-    findAll: findAll,
-    findOne: findOne,
-    deleteOne: deleteOne
-};
+module.exports = pub;

@@ -1,7 +1,7 @@
-var Sequelize = require('sequelize');
-var config = require('../utils/config');
+const Sequelize = require('sequelize');
+const config = require('../utils/config');
 
-var sequelize = new Sequelize(config.database, config.username, config.password, {
+let sequelize = new Sequelize(config.database, config.username, config.password, {
     host: config.host,
     dialect: config.dialect,
 

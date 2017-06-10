@@ -2,6 +2,8 @@ var qiniu = require('qiniu');
 var conf = require('./config');
 var ImgRepository = require('../orm/repository/imgRepository');
 
+let pub = {};
+
 qiniu.conf.ACCESS_KEY = conf.ACCESS_KEY;
 qiniu.conf.SECRET_KEY = conf.SECRET_KEY;
 
@@ -41,7 +43,7 @@ let _deleteFile = async function (img, res) {
     });
 };
 
-let uploadFile = async (key, localFile, callback) => {
+pub.uploadFile = async (key, localFile, callback) => {
     await new Promise((resolve, reject) => {
         _uploadFile(key, localFile, callback, async function () {
             resolve();
@@ -49,7 +51,7 @@ let uploadFile = async (key, localFile, callback) => {
     });
 };
 
-let deleteFile = async (img) => {
+pub.deleteFile = async (img) => {
     await new Promise((resolve, reject) => {
         _deleteFile(img, async function () {
             resolve();
@@ -57,7 +59,4 @@ let deleteFile = async (img) => {
     });
 };
 
-module.exports = {
-    uploadFile: uploadFile,
-    deleteFile: deleteFile
-};
+module.exports = pub;

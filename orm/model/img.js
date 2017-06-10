@@ -1,7 +1,7 @@
 const Sequlize = require('sequelize');
 const sequlize = require('../sequelize');
 
-var Img = sequlize.define('img', {
+let Img = sequlize.define('img', {
     id: {
         type: Sequlize.BIGINT,
         primaryKey: true,
