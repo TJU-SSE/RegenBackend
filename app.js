@@ -12,6 +12,7 @@ const templating = require('./middleware/templating');
 const index = require('./routes/index');
 const users = require('./routes/users');
 const news = require('./routes/news');
+const product = require('./routes/product');
 const redis = require('./routes/redis');
 
 const checkAuthority = require('./middleware/authority');
@@ -59,6 +60,7 @@ app.use(async (ctx, next) => {
 app.use(index.routes(), index.allowedMethods());
 app.use(users.routes(), users.allowedMethods());
 app.use(news.routes(), news.allowedMethods());
+app.use(product.routes(), product.allowedMethods());
 // app.use(redis.routes(), redis.allowedMethods());
 
 

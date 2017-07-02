@@ -3,6 +3,8 @@ const News = require('./model/news');
 const Session = require('./model/session');
 const Test = require('./model/test');
 const User = require('./model/user');
+const Product = require('./model/product');
+const ProductImg = require('./model/productImg');
 
 function syncAll() {
     Img.sync().then(function () {
@@ -24,6 +26,15 @@ function syncAll() {
     User.sync().then(function () {
         console.log("create user success");
     });
+
+    ProductImg.sync().then(function () {
+        console.log("create product_img success");
+    });
+
+    Product.sync().then(function () {
+        console.log("create product success");
+    });
+
 }
 
 let init = function () {
@@ -31,7 +42,9 @@ let init = function () {
     // Img.hasOne(News, { foreignKey: 'cover_img' });
     // Img.hasOne(News, { foreignKey: 'cover_img'});
     News.belongsTo(Img, { foreignKey: 'cover_img', as: 'coverImg'});
-
+    ProductImg.belongsTo(Img, { foreignKey: 'cover_img', as: 'coverImg'});
+    Product.belongsTo(Img, { foreignKey: 'cover_img', as: 'coverImg'});
+    Product.hasMany(ProductImg, {as: 'ProductImgs'});
     syncAll();
 };
 
