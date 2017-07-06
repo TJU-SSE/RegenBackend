@@ -18,12 +18,15 @@ router.get('/create', async (ctx, next) => {
 
 router.post('/create', async (ctx, next) => {
     try {
+        console.log('1');
         let file = ctx.request.body.files.img;
         let title = ctx.request.body.fields.title || '';
         let writer = ctx.request.body.fields.writer || '';
         let content = ctx.request.body.fields.content || '';
         let timestamp = Date.parse(new Date());
+        console.log('2');
         let ret = await NewsService.create(timestamp, file.path, title, writer, content);
+        console.log('3');
         ctx.response.body = ResponseService.createJSONResponse(ret);
     } catch (e) {
         ctx.response.body = ResponseService.createErrResponse(e);

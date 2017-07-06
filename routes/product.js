@@ -6,9 +6,13 @@ const ResponseService = require('../service/responseService');
 // pre URL
 router.prefix('/admin/product');
 
-router.post('/select', async (ctx, next) => {
+
+// OK
+router.get('/select/:id', async (ctx, next) => {
     try {
-        let id = ctx.request.body.id;
+        // let id = ctx.request.body.id;
+        let id = ctx.params.id;
+        // console.log(ctx.query);
         if (!id) { ctx.response.body = ResponseService.createErrResponse('Id not found'); return; }
         let product = await ProductService.findOne({id: id});
         if (!product) { ctx.response.body = ResponseService.createErrResponse('Product not found'); return; }
@@ -19,6 +23,7 @@ router.post('/select', async (ctx, next) => {
     }
 });
 
+// OK
 router.post('/create', async (ctx, next) => {
     try {
         let file = ctx.request.body.files.img;
@@ -34,6 +39,7 @@ router.post('/create', async (ctx, next) => {
     }
 });
 
+// OK
 router.post('/updateImg',  async (ctx, next) => {
     try {
         let id = ctx.request.body.fields.id;
@@ -49,6 +55,7 @@ router.post('/updateImg',  async (ctx, next) => {
     }
 });
 
+// OK
 router.post('/update', async (ctx, next) => {
     try {
         let id = ctx.request.body.fields.id;
@@ -66,6 +73,72 @@ router.post('/update', async (ctx, next) => {
     }
 });
 
+// OK
+router.post('/addProductImg',  async (ctx, next) => {
+    try {
+        let id = ctx.request.body.fields.id;
+        if (!id) { ctx.response.body = ResponseService.createErrResponse('Id not found'); return; }
+        let product = await ProductService.findOne({id: id});
+        if (!product) { ctx.response.body = ResponseService.createErrResponse('Product not found'); return; }
+        let file = ctx.request.body.files.img;
+        let timestamp = Date.parse(new Date());
+        let ret = await ProductService.addProductImg(product, timestamp, file.path);
+        ctx.response.body = ResponseService.createJSONResponse(ret);
+    } catch(e) {
+        ctx.response.body = ResponseService.createErrResponse(e);
+    }
+});
+
+// OK
+router.post('/addProductImgs',  async (ctx, next) => {
+    try {
+        let id = ctx.request.body.fields.id;
+        if (!id) { ctx.response.body = ResponseService.createErrResponse('Id not found'); return; }
+        let product = await ProductService.findOne({id: id});
+        if (!product) { ctx.response.body = ResponseService.createErrResponse('Product not found'); return; }
+        let file = ctx.request.body.files.imgs;
+        let ret = await ProductService.addProductImgs(product, file);
+        ctx.response.body = ResponseService.createJSONResponse(ret);
+    } catch(e) {
+        ctx.response.body = ResponseService.createErrResponse(e);
+    }
+});
+
+// OK
+router.post('/deleteProductImg',  async (ctx, next) => {
+    try {
+        let id = ctx.request.body.fields.id;
+        if (!id) { ctx.response.body = ResponseService.createErrResponse('Id not found'); return; }
+        let product = await ProductService.findOne({id: id});
+        if (!product) { ctx.response.body = ResponseService.createErrResponse('Product not found'); return; }
+        let imgId = ctx.request.body.fields.img_id;
+        if (!imgId) { ctx.response.body = ResponseService.createErrResponse('Img Id not found'); return; }
+        let productImg = await ProductService.findProductImg(product, imgId);
+        if (!productImg) { ctx.response.body = ResponseService.createErrResponse('Img not found'); return; }
+        let ret = await ProductService.deleteProductImg(productImg[0]);
+        ctx.response.body = ResponseService.createJSONResponse(ret);
+    } catch(e) {
+        ctx.response.body = ResponseService.createErrResponse(e);
+    }
+});
+
+// OK
+router.post('/deleteProductImgs',  async (ctx, next) => {
+    try {
+        let id = ctx.request.body.fields.id;
+        if (!id) { ctx.response.body = ResponseService.createErrResponse('Id not found'); return; }
+        let product = await ProductService.findOne({id: id});
+        if (!product) { ctx.response.body = ResponseService.createErrResponse('Product not found'); return; }
+        let imgIds = ctx.request.body.fields.img_ids;
+        if (!imgIds) { ctx.response.body = ResponseService.createErrResponse('Img Id not found'); return; }
+        let ret = await ProductService.deleteProductImgs(product, imgIds);
+        ctx.response.body = ResponseService.createJSONResponse(ret);
+    } catch(e) {
+        ctx.response.body = ResponseService.createErrResponse(e);
+    }
+});
+
+// OK
 router.post('/delete', async (ctx, next) => {
     try {
         let id = ctx.request.body.id;

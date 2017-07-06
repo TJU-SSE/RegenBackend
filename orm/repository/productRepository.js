@@ -14,6 +14,14 @@ pub.findOne = async (filter) => {
     return res;
 };
 
+pub.findProductImg = async (product, imgId) => {
+    return product.getProductImgs({
+        'where': {
+            cover_img: imgId
+        }
+    });
+};
+
 pub.create = async (title, session, releaseTime, introduction, img) =>{
     let product = await Product.create({ title: title, session: session, releaseTime: releaseTime, introduction: introduction});
     product.setCoverImg(img);
@@ -26,10 +34,16 @@ pub.updateImg = async (product, img) => {
     product.setCoverImg(img);
 };
 
-pub.addImg = async (product, img) =>{
-    let imgs = product.getProductImgs();
-    imgs.push(img);
+pub.addProductImg = async (product, img) =>{
+    let imgs = await product.getProductImgs();
+    let productImg = await ProductImgRepository.create(img);
+    imgs.push(productImg);
     product.setProductImgs(imgs);
+};
+
+pub.deleteProductImg = async (productImg) =>{
+    console.log(productImg);
+    await ProductImgRepository.delete(productImg);
 };
 
 pub.update = async (product, title, session, releaseTime, introduction) => {

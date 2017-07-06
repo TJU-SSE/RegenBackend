@@ -2,11 +2,18 @@ let pub = {};
 
 pub.createErrResponse = function(err) {
     console.log(err);
-    return { err: err };
+    return {
+        code: '1',
+        err: err
+    };
 };
 
 pub.createJSONResponse = function (data) {
-    return JSON.stringify(data);
+    // let res = JSON.stringify(data);
+    return {
+        code: '0',
+        msg: data
+    };
 };
 
 module.exports = pub;

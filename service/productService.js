@@ -40,6 +40,61 @@ pub.update = async (product, title, session, releaseTime, introduction) => {
     }
 };
 
+pub.addProductImg = async (product, key, localFile) => {
+    try {
+        await Qiniu.uploadFile(key, localFile, async function (img) {
+            await ProductRepository.addProductImg(product, img);
+        });
+        return 'success';
+    } catch (e) {
+        return e;
+    }
+};
+
+pub.addProductImgs = async (product, files) => {
+    try {
+        let timestamp = Date.parse(new Date());
+        for(let x in files) {
+            let localFile = files[x].path;
+            await pub.addProductImg(product, timestamp + x, localFile);
+        }
+        return 'success';
+    } catch (e) {
+        return e;
+    }
+};
+
+pub.findProductImg = async (product, imgId) => {
+    try {
+        return await ProductRepository.findProductImg(product, imgId);
+    } catch (e) {
+        return null;
+    }
+};
+
+pub.deleteProductImg = async (productImg) => {
+    try {
+        await ProductRepository.deleteProductImg(productImg);
+        return 'success';
+    } catch (e) {
+        return e;
+    }
+};
+
+pub.deleteProductImgs = async (product, productIds) => {
+    try {
+        for(let x in productIds) {
+            let productImg = await pub.findProductImg(product, productIds[x]);
+            if(productImg) {
+                await ProductRepository.deleteProductImg(productImg[0]);
+            }
+        }
+        return 'success';
+    } catch (e) {
+        return e;
+    }
+};
+
 pub.delete = async (filter) => {
     try {
         await ProductRepository.deleteOne(filter);

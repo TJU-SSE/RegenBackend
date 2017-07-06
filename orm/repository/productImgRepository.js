@@ -15,7 +15,7 @@ pub.findOne = async (filter) => {
 
 pub.create = async (img) =>{
     let productImg = await ProductImg.create({});
-    ProductImg.setCoverImg(img);
+    productImg.setCoverImg(img);
     return productImg;
 };
 
