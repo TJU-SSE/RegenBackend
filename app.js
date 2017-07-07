@@ -13,6 +13,7 @@ const index = require('./routes/index');
 const users = require('./routes/users');
 const news = require('./routes/news');
 const product = require('./routes/product');
+const artist = require('./routes/artist');
 const redis = require('./routes/redis');
 
 const checkAuthority = require('./middleware/authority');
@@ -61,6 +62,7 @@ app.use(index.routes(), index.allowedMethods());
 app.use(users.routes(), users.allowedMethods());
 app.use(news.routes(), news.allowedMethods());
 app.use(product.routes(), product.allowedMethods());
+app.use(artist.routes(), artist.allowedMethods());
 // app.use(redis.routes(), redis.allowedMethods());
 
 
