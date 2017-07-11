@@ -85,7 +85,7 @@ pub.deleteProductImgs = async (product, productIds) => {
     try {
         for(let x in productIds) {
             let productImg = await pub.findProductImg(product, productIds[x]);
-            if(productImg) {
+            if (productImg) {
                 await ProductRepository.deleteProductImg(productImg[0]);
             }
         }

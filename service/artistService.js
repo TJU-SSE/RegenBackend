@@ -1,4 +1,6 @@
 const ArtistRepository = require('../orm/repository/artistRepository');
+const ArtistProductRepository = require('../orm/repository/artistProductRepository');
+const ProductRepository = require('../orm/repository/productRepository');
 const ArtistViewModel = require('../view_model/artist');
 const Qiniu = require('../utils/qiniu');
 
@@ -88,6 +90,15 @@ pub.createArtistsViewModel = async (artists, pageOffset, itemSize) => {
         }
         ret['artists'] = list;
         return ret;
+    } catch (e) {
+        return e;
+    }
+};
+
+pub.createArtistProduct = async (artist, product, rank) => {
+    try {
+        await ArtistProductRepository.create(artist, product, rank);
+        return 'success';
     } catch (e) {
         return e;
     }

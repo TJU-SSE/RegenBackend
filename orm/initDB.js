@@ -6,6 +6,7 @@ const User = require('./model/user');
 const Product = require('./model/product');
 const ProductImg = require('./model/productImg');
 const Artist = require('./model/artist');
+const ArtistProduct = require('./model/atristProduct');
 
 function syncAll() {
     Img.sync().then(function () {
@@ -26,6 +27,10 @@ function syncAll() {
 
     User.sync().then(function () {
         console.log("create user success");
+    });
+
+    ArtistProduct.sync().then(function () {
+        console.log("create artist_product success");
     });
 
     ProductImg.sync().then(function () {
@@ -50,6 +55,8 @@ let init = function () {
     ProductImg.belongsTo(Img, { foreignKey: 'cover_img', as: 'coverImg'});
     Product.belongsTo(Img, { foreignKey: 'cover_img', as: 'coverImg'});
     Product.hasMany(ProductImg, {as: 'ProductImgs'});
+    Product.hasMany(ArtistProduct, {as: 'ArtistProducts'});
+    Artist.hasMany(ArtistProduct, {as: 'ArtistProducts'});
     Artist.belongsTo(Img, { foreignKey: 'cover_img', as: 'coverImg'});
     syncAll();
 };

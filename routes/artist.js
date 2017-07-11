@@ -1,6 +1,7 @@
 const router = require('koa-router')();
 
 const ArtistService = require('../service/artistService');
+const ProductService = require('../service/productService');
 const ResponseService = require('../service/responseService');
 
 // pre URL
@@ -99,6 +100,26 @@ router.post('/updateImg',  async (ctx, next) => {
         let file = ctx.request.body.files.img;
         let timestamp = Date.parse(new Date());
         let ret = await ArtistService.updateImg(artist, timestamp, file.path);
+        ctx.response.body = ResponseService.createJSONResponse(ret);
+    } catch(e) {
+        ctx.response.body = ResponseService.createErrResponse(e);
+    }
+});
+
+
+router.post('/createArtistProduct',  async (ctx, next) => {
+    try {
+        let artistName = ctx.request.body.fields.artistName;
+        if (!artistName) { ctx.response.body = ResponseService.createErrResponse('ArtistName not found'); return; }
+        let artist = await ArtistService.findOne({name: artistName});
+        if (!artist) { ctx.response.body = ResponseService.createErrResponse('Artist not found'); return; }
+        let productId = ctx.request.body.fields.productId;
+        if (!productId) { ctx.response.body = ResponseService.createErrResponse('ProductId not found'); return; }
+        let product = await ProductService.findOne({id: productId});
+        if (!product) { ctx.response.body = ResponseService.createErrResponse('Product not found'); return; }
+        let rank = ctx.request.body.fields.rank;
+        if (!rank) { ctx.response.body = ResponseService.createErrResponse('Rank not found'); return; }
+        let ret = await ArtistService.createArtistProduct(artist, product, rank);
         ctx.response.body = ResponseService.createJSONResponse(ret);
     } catch(e) {
         ctx.response.body = ResponseService.createErrResponse(e);
