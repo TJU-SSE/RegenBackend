@@ -27,4 +27,18 @@ pub.createArtistBrief = function (id, name, identity, img_id, img_url) {
     };
 };
 
+pub.createArtistProducts = function (artistProductId, rank, productId, title, session, releaseTime, introduction, img_id, img_url) {
+   return {
+       artistProductId: artistProductId,
+       rank: rank,
+       productId: productId,
+       title: title,
+       session: session,
+       releaseTime: releaseTime,
+       introduction:introduction,
+       img_id: img_id,
+       img_url: img_url
+    }
+};
+
 module.exports = pub;

@@ -47,10 +47,10 @@ pub.deleteProductImg = async (productImg) =>{
 };
 
 pub.update = async (product, title, session, releaseTime, introduction) => {
-    if(title) product.title = title;
-    if(session) product.session = session;
-    if(releaseTime) product.releaseTime = releaseTime;
-    if(introduction) product.introduction = introduction;
+    if (title) product.title = title;
+    if (session) product.session = session;
+    if (releaseTime) product.releaseTime = releaseTime;
+    if (introduction) product.introduction = introduction;
     await product.save();
 };
 

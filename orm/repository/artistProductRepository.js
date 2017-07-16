@@ -1,5 +1,4 @@
 const ArtistProduct = require('../model/atristProduct');
-const Qiniu = require('../../utils/qiniu');
 
 let pub = {};
 
@@ -30,7 +29,7 @@ pub.create = async (artist, product, rank) =>{
 };
 
 pub.update = async (artistProduct, rank) => {
-    if(rank) artistProduct.rank = rank;
+    if (rank) artistProduct.rank = rank;
     await artistProduct.save();
 };
 
@@ -39,6 +38,14 @@ pub.deleteOne = async (filter) => {
     if (artistProduct) {
         await artistProduct.destroy();
     }
+};
+
+pub.delete = async (artistProduct) => {
+    await artistProduct.destroy();
+};
+
+pub.getArtistProducts = async (artist) => {
+    return artist.getArtistProducts();
 };
 
 module.exports = pub;

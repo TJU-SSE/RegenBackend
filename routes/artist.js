@@ -126,6 +126,57 @@ router.post('/createArtistProduct',  async (ctx, next) => {
     }
 });
 
+
+// OK
+router.get('/selectArticleProductByName/:name', async (ctx, next) => {
+    try {
+        let name = ctx.params.name;
+        if (!name) { ctx.response.body = ResponseService.createErrResponse('Name not found'); return; }
+        let artist = await ArtistService.findOne({name: name});
+        if (!artist) { ctx.response.body = ResponseService.createErrResponse('Artist not found'); return; }
+        let pageOffset = ctx.query.pageOffset || 0;
+        let itemSize = ctx.query.itemSize || 0;
+        let ret = await ArtistService.createArtistProductsViewModel(artist, pageOffset, itemSize);
+        ctx.response.body = ResponseService.createJSONResponse(ret);
+    } catch (e) {
+        ctx.response.body = ResponseService.createErrResponse(e);
+    }
+});
+
+// OK
+router.post('/updateRanks', async (ctx, next) => {
+    try {
+        let name = ctx.request.body.artistName;
+        if (!name) { ctx.response.body = ResponseService.createErrResponse('ArtistName not found'); return; }
+        let artist = await ArtistService.findOne({name: name});
+        if (!artist) { ctx.response.body = ResponseService.createErrResponse('Artist not found'); return; }
+        let products = ctx.request.body.products;
+        let ret = await ArtistService.updateRanks(artist, products);
+        ctx.response.body = ResponseService.createJSONResponse(ret);
+    } catch (e) {
+        ctx.response.body = ResponseService.createErrResponse(e);
+    }
+});
+
+// OK
+router.post('/deleteArticleProduct', async (ctx, next) => {
+    try {
+        let name = ctx.request.body.artistName;
+        if (!name) { ctx.response.body = ResponseService.createErrResponse('ArtistName not found'); return; }
+        let artist = await ArtistService.findOne({name: name});
+        if (!artist) { ctx.response.body = ResponseService.createErrResponse('Artist not found'); return; }
+        let artistId = artist.get('id');
+        let productId = ctx.request.body.productId;
+        if (!productId) { ctx.response.body = ResponseService.createErrResponse('ProductId not found'); return; }
+        let artistProduct = await ArtistService.findArtistProduct({artistId: artistId, productId: productId})
+        if (!artistProduct) { ctx.response.body = ResponseService.createErrResponse('ArtistProduct not found'); return; }
+        let ret = await ArtistService.deleteArtistProduct(artistProduct);
+        ctx.response.body = ResponseService.createJSONResponse(ret);
+    } catch (e) {
+        ctx.response.body = ResponseService.createErrResponse(e);
+    }
+});
+
 // OK
 router.post('/delete', async (ctx, next) => {
     try {

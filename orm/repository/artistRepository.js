@@ -15,8 +15,10 @@ pub.findAllFilter = async (filter) => {
 
 pub.findOne = async (filter) => {
     let res = await Artist.findOne({where: filter});
-    res.viewcount += 1;
-    res.save();
+    if (res) {
+        res.viewcount += 1;
+        res.save();
+    }
     return res;
 };
 

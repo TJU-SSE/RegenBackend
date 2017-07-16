@@ -10,11 +10,15 @@ pub.findAll = async () => {
 
 pub.findOne = async (filter) => {
     let res = await News.findOne({where: filter});
+    if (res) {
+        res.viewcount += 1;
+        res.save();
+    }
     return res;
 };
 
-pub.create = async (title, writer, content, img) =>{
-    let news = await News.create({ title: title, writer: writer, content: content});
+pub.create = async (title, writer, content, time, img) =>{
+    let news = await News.create({ title: title, writer: writer, content: content, time: time, viewcount: 0});
     news.setCoverImg(img);
     return news;
 };
@@ -25,10 +29,11 @@ pub.updateImg = async (news, img) => {
     news.setCoverImg(img);
 };
 
-pub.update = async (news, title, writer, content) => {
+pub.update = async (news, title, writer, content, time) => {
     if(title) news.title = title;
     if(writer) news.writer = writer;
     if(content) news.content = content;
+    if(time) news.time = time;
     await news.save();
 };
 
