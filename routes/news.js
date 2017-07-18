@@ -4,7 +4,7 @@ const NewsService = require('../service/newsService');
 const ResponseService = require('../service/responseService');
 
 // pre URL
-router.prefix('/news');
+router.prefix('/admin/news');
 
 router.get('/show', async (ctx, next) => {
     let news = await NewsService.findOne({id: 32});
@@ -34,8 +34,9 @@ router.post('/create', async (ctx, next) => {
         let writer = ctx.request.body.fields.writer || '';
         let content = ctx.request.body.fields.content || '';
         let time = ctx.request.body.fields.time || '';
+        let tags = ctx.request.body.fields.tags || [];
         let timestamp = Date.parse(new Date());
-        let ret = await NewsService.create(timestamp, file.path, title, writer, content, time);
+        let ret = await NewsService.create(timestamp, file.path, title, writer, content, time, tags);
         ctx.response.body = ResponseService.createJSONResponse(ret);
     } catch (e) {
         ctx.response.body = ResponseService.createErrResponse(e);
@@ -83,7 +84,8 @@ router.post('/update', async (ctx, next) => {
         let writer = ctx.request.body.fields.writer;
         let content = ctx.request.body.fields.content;
         let time = ctx.request.body.fields.time;
-        let ret = await NewsService.update(news, title, writer, content, time);
+        let tags = ctx.request.body.fields.tags;
+        let ret = await NewsService.update(news, title, writer, content, time, tags);
         ctx.response.body = ResponseService.createJSONResponse(ret);
     } catch(e) {
         ctx.response.body = ResponseService.createErrResponse(e);

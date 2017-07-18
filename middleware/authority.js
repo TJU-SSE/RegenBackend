@@ -4,14 +4,13 @@ const ResponseService = require('../service/responseService');
 function checkIfAllow(request) {
 
     if (request.path.split('/')[1] === 'admin' && request.method == 'POST') {
-        console.log('Check: ' + true);
         return false;
     }
-    console.log('Check: ' + true);
     return true;
 }
 
 var checkAuthority = function () {
+
     return async (ctx, next) => {
 
         if(checkIfAllow(ctx.request)) {

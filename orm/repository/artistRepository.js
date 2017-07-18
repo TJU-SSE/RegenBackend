@@ -1,4 +1,5 @@
 const Artist = require('../model/artist');
+const ArtistProductRepository = require('./artistProductRepository');
 const Qiniu = require('../../utils/qiniu');
 
 let pub = {};
@@ -49,6 +50,11 @@ pub.deleteOne = async (filter) => {
     if (artist) {
         let img = await artist.getCoverImg();
         await Qiniu.deleteFile(img);
+        let articleProducts = await ArtistProductRepository.getArtistProducts(artist);
+        for (let x in articleProducts) {
+            let articleProduct = articleProducts[x];
+            await ArtistProductRepository.delete(articleProduct);
+        }
         await artist.destroy();
     }
 };

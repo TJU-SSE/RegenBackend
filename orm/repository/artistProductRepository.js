@@ -25,7 +25,7 @@ pub.create = async (artist, product, rank) =>{
     let artistProducts2 = await product.getArtistProducts();
     artistProducts2.push(artistProduct);
     product.setArtistProducts(artistProducts2);
-    return artist;
+    return artistProduct;
 };
 
 pub.update = async (artistProduct, rank) => {

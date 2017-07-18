@@ -1,5 +1,6 @@
 const Product = require('../model/product');
 const ProductImgRepository = require('./productImgRepository');
+const ArtistProductRepository = require('./artistProductRepository');
 const Qiniu = require('../../utils/qiniu');
 
 let pub = {};
@@ -63,6 +64,11 @@ pub.deleteOne = async (filter) => {
         for (let x in imgs) {
             let img1 = imgs[x];
             await ProductImgRepository.delete(img1);
+        }
+        let articleProducts = await product.getArtistProducts();
+        for (let x in articleProducts) {
+            let articleProduct = articleProducts[x];
+            await ArtistProductRepository.delete(articleProduct);
         }
         await product.destroy();
     }

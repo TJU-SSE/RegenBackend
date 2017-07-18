@@ -13,8 +13,9 @@ pub.findAll = async () => {
 
 pub.create = async (news, rank) => {
     try {
-        await IndexImgRepository.create(news, rank);
-        return 'success';
+        let indexImg = await IndexImgRepository.create(news, rank);
+        let id = indexImg.get('id');
+        return {id: id};
     } catch (e) {
         return e;
     }

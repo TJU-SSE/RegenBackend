@@ -30,7 +30,6 @@ router.post('/login', async (ctx, next) => {
         let username = ctx.request.body.fields.username || '';
         let password = ctx.request.body.fields.password || '';
         let user = await UserRepository.findOne({'username': username, 'password': password});
-        console.log(user);
         if(user) {
             let session = await SessionRepository.findOne({'username': username});
             await ctx.cookies.set('sessionId', session.get('id'));

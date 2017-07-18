@@ -8,6 +8,8 @@ const ProductImg = require('./model/productImg');
 const Artist = require('./model/artist');
 const ArtistProduct = require('./model/atristProduct');
 const IndexImg = require('./model/indexImg');
+const NewsTag = require('./model/newsTag');
+const Tag = require('./model/tag');
 
 function syncAll() {
     Img.sync().then(function () {
@@ -49,6 +51,14 @@ function syncAll() {
     IndexImg.sync().then(function () {
         console.log("create index_img success");
     });
+
+    Tag.sync().then(function () {
+        console.log("create tag success");
+    });
+
+    NewsTag.sync().then(function () {
+        console.log("create news_tag success");
+    });
 }
 
 let init = function () {
@@ -63,6 +73,8 @@ let init = function () {
     Artist.hasMany(ArtistProduct, {as: 'ArtistProducts'});
     Artist.belongsTo(Img, { foreignKey: 'cover_img', as: 'coverImg'});
     IndexImg.belongsTo(News, { foreignKey: 'news_id', as: 'news'});
+    News.hasMany(NewsTag, {as: 'NewsTags'});
+    Tag.hasMany(NewsTag, {as: 'NewsTags'});
     syncAll();
 };
 
