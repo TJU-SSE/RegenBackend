@@ -1,53 +1,66 @@
 const router = require('koa-router')();
 const UserRepository = require('../orm/repository/userRepository');
 const SessionRepository = require('../orm/repository/sessionRepository');
-const News = require('../orm/model/news');
-const Img = require('../orm/model/img');
+const ResponseService = require('../service/responseService');
 
-// router.prefix('/users')
+// pre URL
+router.prefix('/user');
+
 
 router.get('/logout', async (ctx, next) => {
-  await ctx.cookies.set('sessionId', '');
-  await ctx.render('logout');
+    try {
+        await ctx.cookies.set('sessionId', '');
+        ctx.response.body = ResponseService.createJSONResponse('Logout Successfully');
+    } catch(e) {
+        ctx.response.body = ResponseService.createErrResponse(e);
+    }
 });
 
-router.get('/login', async (ctx, next) => {
-  await ctx.render('login', {});
+router.post('/test', async (ctx, next) => {
+    ctx.response.body = ResponseService.createJSONResponse();
 });
+
+router.get('/test', async (ctx, next) => {
+    ctx.response.body = ResponseService.createJSONResponse();
+});
+
 
 router.post('/login', async (ctx, next) => {
-  let username = ctx.request.body.username || '';
-  let password = ctx.request.body.password || '';
-  console.log('Login ' + username + ' ' + password);
-  let user = await UserRepository.findOne({'username': username, 'password': password});
-  if(user) {
-    let session = await SessionRepository.findOne({'username': username});
-    await ctx.cookies.set('sessionId', session.get('id'));
-    await ctx.redirect('/admin/index');
-  }
-  else {
-    await ctx.redirect('/login');
-  }
-});
-
-router.get('/register', async (ctx, next) => {
-  await ctx.render('register', {});
+    try {
+        let username = ctx.request.body.fields.username || '';
+        let password = ctx.request.body.fields.password || '';
+        let user = await UserRepository.findOne({'username': username, 'password': password});
+        console.log(user);
+        if(user) {
+            let session = await SessionRepository.findOne({'username': username});
+            await ctx.cookies.set('sessionId', session.get('id'));
+            ctx.response.body = ResponseService.createJSONResponse('Login Successfully');
+        }
+        else {
+            ctx.response.body = ResponseService.createErrResponse('Login error');
+        }
+    } catch(e) {
+        ctx.response.body = ResponseService.createErrResponse(e);
+    }
 });
 
 router.post('/register', async (ctx, next) => {
-  let username = ctx.request.body.username || '';
-  let password = ctx.request.body.password || '';
-  console.log('Register ' + username + ' ' + password);
-  let user = await UserRepository.findOne({'username': username});
-  if(user) {
-    await ctx.redirect('/register');
-  }
-  else {
-    await UserRepository.create(username, password);
-    let session = await SessionRepository.create(username, username);
-    await ctx.cookies.set('sessionId', session.get('id'));
-    await ctx.redirect('/admin/index');
-  }
+    try {
+        let username = ctx.request.body.fields.username || '';
+        let password = ctx.request.body.fields.password || '';
+        let user = await UserRepository.findOne({'username': username});
+        if(user) {
+            ctx.response.body = ResponseService.createErrResponse('Username used');
+        }
+        else {
+            await UserRepository.create(username, password);
+            let session = await SessionRepository.create(username, username);
+            await ctx.cookies.set('sessionId', session.get('id'));
+            ctx.response.body = ResponseService.createJSONResponse('Register Successfully');
+        }
+    } catch(e) {
+        ctx.response.body = ResponseService.createErrResponse(e);
+    }
 });
 
 module.exports = router;

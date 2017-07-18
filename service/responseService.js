@@ -16,4 +16,11 @@ pub.createJSONResponse = function (data) {
     };
 };
 
+pub.createAuthResponse = function () {
+    return {
+        code: '2',
+        err: 'No Authority'
+    }
+};
+
 module.exports = pub;

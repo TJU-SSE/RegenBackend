@@ -55,7 +55,7 @@ app.use(async (ctx, next) => {
 });
 
 // authority
-// app.use(checkAuthority());
+app.use(checkAuthority());
 
 
 // routes

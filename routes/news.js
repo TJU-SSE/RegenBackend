@@ -4,7 +4,7 @@ const NewsService = require('../service/newsService');
 const ResponseService = require('../service/responseService');
 
 // pre URL
-router.prefix('/admin/news');
+router.prefix('/news');
 
 router.get('/show', async (ctx, next) => {
     let news = await NewsService.findOne({id: 32});

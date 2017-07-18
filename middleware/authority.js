@@ -1,20 +1,27 @@
 const SessionRepository = require('../orm/repository/sessionRepository');
+const ResponseService = require('../service/responseService');
 
-function checkIfAllow(path) {
-    return path.split('/')[1] === 'admin';
+function checkIfAllow(request) {
+
+    if (request.path.split('/')[1] === 'admin' && request.method == 'POST') {
+        console.log('Check: ' + true);
+        return false;
+    }
+    console.log('Check: ' + true);
+    return true;
 }
 
 var checkAuthority = function () {
     return async (ctx, next) => {
-        console.log(ctx.request.path);
-        if(!checkIfAllow(ctx.request.path)) {
+
+        if(checkIfAllow(ctx.request)) {
             await next();
         }
         else {
             var id = ctx.cookies.get('sessionId');
             let session = await SessionRepository.findOne({id: id});
             if(session == null) {
-                ctx.redirect('/login');
+                ctx.response.body = ResponseService.createAuthResponse();
             }
             else {
                 await next();
