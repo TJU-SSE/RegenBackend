@@ -11,10 +11,12 @@ pub.findOne = async (filter) => {
 
 pub.create = async (key, localFile, title, session, releaseTime, introduction) => {
     try {
+        let product = null;
         await Qiniu.uploadFile(key, localFile, async function (img) {
-            await ProductRepository.create(title, session, releaseTime, introduction, img);
+            product = await ProductRepository.create(title, session, releaseTime, introduction, img);
         });
-        return 'success';
+        let id = product.get('id');
+        return {id: id};
     } catch (e) {
         return e;
     }

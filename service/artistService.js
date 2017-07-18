@@ -20,10 +20,12 @@ pub.findArtistProduct = async (filter) => {
 
 pub.create = async (key, localFile, name, identity, social, address, extraBiography, biography) => {
     try {
+        let artist = null;
         await Qiniu.uploadFile(key, localFile, async function (img) {
-            await ArtistRepository.create(name, identity, social, address, extraBiography, biography, img);
+            artist = await ArtistRepository.create(name, identity, social, address, extraBiography, biography, img);
         });
-        return 'success';
+        let id = artist.get('id');
+        return {id:id};
     } catch (e) {
         return e;
     }

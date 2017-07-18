@@ -15,10 +15,12 @@ pub.findAll = async () => {
 
 pub.create = async (key, localFile, title, writer, content, time, tags) => {
     try {
+        let news = null;
         await Qiniu.uploadFile(key, localFile, async function (img) {
-                await NewsRepository.create(title, writer, content, time, img, tags);
+            news = await NewsRepository.create(title, writer, content, time, img, tags);
         });
-        return 'success';
+        let id = news.get('id');
+        return {id:id};
     } catch (e) {
         return e;
     }
