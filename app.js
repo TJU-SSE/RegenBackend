@@ -6,6 +6,7 @@ const onerror = require('koa-onerror');
 const bodyparser = require('koa-bodyparser')();
 const logger = require('koa-logger');
 const koaBody = require('koa-body');
+const cors = require('koa2-cors');
 
 const templating = require('./middleware/templating');
 
@@ -54,6 +55,16 @@ app.use(async (ctx, next) => {
   const ms = new Date() - start;
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
 });
+
+// cors
+app.use(cors({
+  origin: "*",
+  exposeHeaders: ['WWW-Authenticate', 'Server-Authorization', 'Date'],
+  maxAge: 100,
+  credentials: true,
+  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Custom-Header', 'anonymous']
+}));
 
 // authority
 app.use(checkAuthority());

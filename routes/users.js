@@ -27,8 +27,8 @@ router.get('/test', async (ctx, next) => {
 
 router.post('/login', async (ctx, next) => {
     try {
-        let username = ctx.request.body.fields.username || '';
-        let password = ctx.request.body.fields.password || '';
+        let username = ctx.request.body.username || '';
+        let password = ctx.request.body.password || '';
         let user = await UserRepository.findOne({'username': username, 'password': password});
         if(user) {
             let session = await SessionRepository.findOne({'username': username});
