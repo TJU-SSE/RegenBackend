@@ -18,8 +18,10 @@ router.get('/create', async (ctx, next) => {
 
 router.get('/getAll', async (ctx, next) => {
     try {
+        let pageOffset = ctx.query.pageOffset || 0;
+        let itemSize = ctx.query.itemSize || 0;
         let newses = await NewsService.findAll();
-        let ret = await NewsService.createNewsesViewModel(newses);
+        let ret = await NewsService.createNewsesViewModel(newses, pageOffset, itemSize);
         ctx.response.body = ResponseService.createJSONResponse(ret);
     } catch (e) {
         ctx.response.body = ResponseService.createErrResponse(e);

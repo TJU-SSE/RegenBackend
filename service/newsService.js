@@ -81,10 +81,11 @@ pub.createNewsViewModel = async (news) => {
     }
 };
 
-pub.createNewsesViewModel = async (newses) => {
+pub.createNewsesViewModel = async (newses, pageOffset, itemSize) => {
     try {
-        let ret = [];
-        for (let x in newses) {
+        let ret = { pageOffset: pageOffset, itemSize: itemSize, total: newses.length };
+        let list = [];
+        for (let x = pageOffset * itemSize; x < newses.length && x < pageOffset * itemSize + itemSize; x++) {
             let news = newses[x];
             let id = news.get('id');
             let title = news.get('title');
@@ -102,11 +103,12 @@ pub.createNewsesViewModel = async (newses) => {
                 let tagTitle = tag.get('title');
                 tags.push(tagTitle);
             }
-            ret.push(NewsViewModel.createNewses(id, title, writer, time, img_id, img_url, tags))
+            list.push(NewsViewModel.createNewses(id, title, writer, time, img_id, img_url, tags))
         }
-        return ret.sort((a, b) => {
-            return a.time - b.time;
+        ret['newses'] = list.sort((a, b) => {
+            return b.time - a.time;
         });
+        return ret;
     } catch (e) {
         return e;
     }

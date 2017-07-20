@@ -1,5 +1,5 @@
-# Regeneration
-Regeneration
+# Regen
+Regen
 
 ## 南小鸟镇楼没有Bug
 
