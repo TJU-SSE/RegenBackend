@@ -10,7 +10,9 @@ var config = {
   bucket: 'regenerationpub',
   filePath: '../img/',
   // download: 'http://oq7eluo6z.bkt.clouddn.com/'
-  download: 'http://orbctx8xa.bkt.clouddn.com/'
+  download: 'http://orbctx8xa.bkt.clouddn.com/',
+
+  FRONTEND_URL: 'http://localhost:8080'
 };
 
 module.exports = config;

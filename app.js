@@ -21,6 +21,8 @@ const redis = require('./routes/redis');
 
 const checkAuthority = require('./middleware/authority');
 
+const config = require('./utils/config')
+
 const initDB = require('./orm/initDB');
 initDB();
 
@@ -58,7 +60,7 @@ app.use(async (ctx, next) => {
 
 // cors
 app.use(cors({
-  origin: "*",
+  origin: config.FRONTEND_URL,
   exposeHeaders: ['WWW-Authenticate', 'Server-Authorization', 'Date'],
   maxAge: 100,
   credentials: true,
