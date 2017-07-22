@@ -11,7 +11,9 @@ router.get('/getAll', async (ctx, next) => {
     try {
         let pageOffset = ctx.query.pageOffset || 0;
         let itemSize = ctx.query.itemSize || 0;
-        let newses = await NewsService.findAll();
+        itemSize = parseInt(itemSize);
+        pageOffset = parseInt(pageOffset) * parseInt(itemSize);
+        let newses = await NewsService.findAll({'limit': itemSize, 'offset': pageOffset});
         let ret = await NewsService.createNewsesViewModel(newses, pageOffset, itemSize);
         ctx.response.body = ResponseService.createJSONResponse(ret);
     } catch (e) {

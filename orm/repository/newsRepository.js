@@ -5,8 +5,8 @@ const Qiniu = require('../../utils/qiniu');
 
 let pub = {};
 
-pub.findAll = async () => {
-    let res = await News.findAll();
+pub.findAll = async (filter) => {
+    let res = await News.findAll(filter);
     return res;
 };
 

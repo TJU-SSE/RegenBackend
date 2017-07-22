@@ -9,8 +9,8 @@ pub.findOne = async (filter) => {
     return await NewsRepository.findOne(filter);
 };
 
-pub.findAll = async () => {
-    return await NewsRepository.findAll();
+pub.findAll = async (filter) => {
+    return await NewsRepository.findAll(filter);
 };
 
 pub.create = async (key, localFile, title, writer, content, time, tags) => {
@@ -85,7 +85,7 @@ pub.createNewsesViewModel = async (newses, pageOffset, itemSize) => {
     try {
         let ret = { pageOffset: pageOffset, itemSize: itemSize, total: newses.length };
         let list = [];
-        for (let x = pageOffset * itemSize; x < newses.length && x < pageOffset * itemSize + itemSize; x++) {
+        for (let x in newses) {
             let news = newses[x];
             let id = news.get('id');
             let title = news.get('title');
