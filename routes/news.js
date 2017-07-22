@@ -6,15 +6,6 @@ const ResponseService = require('../service/responseService');
 // pre URL
 router.prefix('/admin/news');
 
-router.get('/show', async (ctx, next) => {
-    let news = await NewsService.findOne({id: 32});
-    let ret = await NewsService.createNewsViewModel(news);
-    await ctx.render('user_create', {news: ret});
-});
-
-router.get('/create', async (ctx, next) => {
-    await ctx.render('user_create_one');
-});
 
 router.get('/getAll', async (ctx, next) => {
     try {
