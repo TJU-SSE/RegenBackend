@@ -118,12 +118,20 @@ pub.createNewsesViewModel = async (newses, pageOffset, itemSize) => {
 pub.getRecommand = async function (filter) {
     try {
         let findNewsTags = await NewsTagRepository.findAllFilter(filter);
+        let newses = [];
+        for (let i in findNewsTags) {
+            let newsId = findNewsTags[i].get('newsId');
+            let news1 = await NewsRepository.findOne({id:newsId});
+            newses.push(news1);
+        }
+        newses.sort((a, b) => {
+            return b.time - a.time;
+        });
         let ret = [];
-        for (let x in findNewsTags) {
+        for (let x in newses) {
             if (x < 4){
-                let newsTag = findNewsTags[x];
-                let id = newsTag.get('newsId');
-                let news = await NewsRepository.findOne({id:id});
+                let news = newses[x];
+                let id = news.get('id');
                 let title = news.get('title');
                 let writer = news.get('writer');
                 let time = news.get('time');
