@@ -106,9 +106,7 @@ pub.createNewsesViewModel = async (newses, pageOffset, itemSize) => {
             }
             list.push(NewsViewModel.createNewses(id, title, writer, time, img_id, img_url, tags))
         }
-        ret['newses'] = list.sort((a, b) => {
-            return b.time - a.time;
-        });
+        ret['newses'] = list;
         return ret;
     } catch (e) {
         return e;

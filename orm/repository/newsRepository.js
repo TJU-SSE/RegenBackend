@@ -6,6 +6,7 @@ const Qiniu = require('../../utils/qiniu');
 let pub = {};
 
 pub.findAll = async (filter) => {
+    filter['order'] = 'time DESC';
     let res = await News.findAll(filter);
     return res;
 };
