@@ -10,7 +10,7 @@ pub.findAll = async () => {
 };
 
 pub.findAllFilter = async (filter) => {
-    let res = await Artist.findAll({where: filter});
+    let res = await Artist.findAll(filter);
     return res;
 };
 

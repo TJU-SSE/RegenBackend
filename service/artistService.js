@@ -84,7 +84,7 @@ pub.createArtistsViewModel = async (artists, pageOffset, itemSize) => {
     try {
         let ret = { pageOffset: pageOffset, itemSize: itemSize, total: artists.length };
         let list = [];
-        for(let x = pageOffset * itemSize; x < artists.length && x < pageOffset * itemSize + itemSize; x++ ) {
+        for(let x in artists) {
             let artist = artists[x];
             let id = artist.get('id');
             let name = artist.get('name');

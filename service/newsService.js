@@ -1,5 +1,6 @@
 const NewsRepository = require('../orm/repository/newsRepository');
 const TagRepository = require('../orm/repository/tagRepository');
+const NewsTagRepository = require('../orm/repository/newsTagRepository');
 const NewsViewModel = require('../view_model/news');
 const Qiniu = require('../utils/qiniu');
 
@@ -9,8 +10,12 @@ pub.findOne = async (filter) => {
     return await NewsRepository.findOne(filter);
 };
 
-pub.findAll = async () => {
-    return await NewsRepository.findAll();
+pub.getTotalSize = async () => {
+    return await NewsRepository.getTotalSize();
+};
+
+pub.findAll = async (filter) => {
+    return await NewsRepository.findAll(filter);
 };
 
 pub.create = async (key, localFile, title, writer, content, time, tags) => {
@@ -81,11 +86,11 @@ pub.createNewsViewModel = async (news) => {
     }
 };
 
-pub.createNewsesViewModel = async (newses, pageOffset, itemSize) => {
+pub.createNewsesViewModel = async (newses, pageOffset, itemSize, total) => {
     try {
-        let ret = { pageOffset: pageOffset, itemSize: itemSize, total: newses.length };
+        let ret = { pageOffset: pageOffset, itemSize: itemSize, total: total };
         let list = [];
-        for (let x = pageOffset * itemSize; x < newses.length && x < pageOffset * itemSize + itemSize; x++) {
+        for (let x in newses) {
             let news = newses[x];
             let id = news.get('id');
             let title = news.get('title');
@@ -105,9 +110,48 @@ pub.createNewsesViewModel = async (newses, pageOffset, itemSize) => {
             }
             list.push(NewsViewModel.createNewses(id, title, writer, time, img_id, img_url, tags))
         }
-        ret['newses'] = list.sort((a, b) => {
+        ret['newses'] = list;
+        return ret;
+    } catch (e) {
+        return e;
+    }
+};
+
+pub.getRecommand = async function (filter) {
+    try {
+        let findNewsTags = await NewsTagRepository.findAllFilter(filter);
+        let newses = [];
+        for (let i in findNewsTags) {
+            let newsId = findNewsTags[i].get('newsId');
+            let news1 = await NewsRepository.findOne({id:newsId});
+            newses.push(news1);
+        }
+        newses.sort((a, b) => {
             return b.time - a.time;
         });
+        let ret = [];
+        for (let x in newses) {
+            if (x < 4){
+                let news = newses[x];
+                let id = news.get('id');
+                let title = news.get('title');
+                let writer = news.get('writer');
+                let time = news.get('time');
+                let img = await news.getCoverImg();
+                let img_id = img.get('id');
+                let img_url = img.get('url');
+                let newsTags = await news.getNewsTags();
+                let tags = [];
+                for (let y in newsTags) {
+                    let newsTag = newsTags[y];
+                    let tagId = newsTag.get('tagId');
+                    let tag = await TagRepository.findOne({id: tagId});
+                    let tagTitle = tag.get('title');
+                    tags.push(tagTitle);
+                }
+                ret.push(NewsViewModel.createNewses(id, title, writer, time, img_id, img_url, tags));
+            }
+        }
         return ret;
     } catch (e) {
         return e;

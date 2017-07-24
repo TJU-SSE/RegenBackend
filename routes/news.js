@@ -6,22 +6,17 @@ const ResponseService = require('../service/responseService');
 // pre URL
 router.prefix('/admin/news');
 
-router.get('/show', async (ctx, next) => {
-    let news = await NewsService.findOne({id: 32});
-    let ret = await NewsService.createNewsViewModel(news);
-    await ctx.render('user_create', {news: ret});
-});
-
-router.get('/create', async (ctx, next) => {
-    await ctx.render('user_create_one');
-});
 
 router.get('/getAll', async (ctx, next) => {
     try {
         let pageOffset = ctx.query.pageOffset || 0;
         let itemSize = ctx.query.itemSize || 20;
-        let newses = await NewsService.findAll();
-        let ret = await NewsService.createNewsesViewModel(newses, pageOffset, itemSize);
+        itemSize = parseInt(itemSize);
+        pageOffset = parseInt(pageOffset) * parseInt(itemSize);
+        let total = await NewsService.getTotalSize();
+        let newses = await NewsService.findAll({'limit': itemSize, 'offset': pageOffset});
+
+        let ret = await NewsService.createNewsesViewModel(newses, pageOffset, itemSize, total);
         ctx.response.body = ResponseService.createJSONResponse(ret);
     } catch (e) {
         ctx.response.body = ResponseService.createErrResponse(e);
@@ -78,15 +73,15 @@ router.post('/updateImg',  async (ctx, next) => {
 // OK
 router.post('/update', async (ctx, next) => {
     try {
-        let id = ctx.request.body.fields.id;
+        let id = ctx.request.body.id;
         if (!id) { ctx.response.body = ResponseService.createErrResponse('Id not found'); return; }
         let news = await NewsService.findOne({id: id});
         if (!news) { ctx.response.body = ResponseService.createErrResponse('News not found'); return; }
-        let title = ctx.request.body.fields.title;
-        let writer = ctx.request.body.fields.writer;
-        let content = ctx.request.body.fields.content;
-        let time = ctx.request.body.fields.time;
-        let tags = ctx.request.body.fields.tags;
+        let title = ctx.request.body.title;
+        let writer = ctx.request.body.writer;
+        let content = ctx.request.body.content;
+        let time = ctx.request.body.time;
+        let tags = ctx.request.body.tags;
         let ret = await NewsService.update(news, title, writer, content, time, tags);
         ctx.response.body = ResponseService.createJSONResponse(ret);
     } catch(e) {
@@ -100,6 +95,17 @@ router.post('/delete', async (ctx, next) => {
         let id = ctx.request.body.id;
         if (!id) { ctx.response.body = ResponseService.createErrResponse('Id not found'); return; }
         let ret = await NewsService.delete({id: id});
+        ctx.response.body = ResponseService.createJSONResponse(ret);
+    } catch (e) {
+        ctx.response.body = ResponseService.createErrResponse(e);
+    }
+});
+
+router.get('/recommand/:tagId', async (ctx, next) => {
+    try {
+        let tagId = ctx.params.tagId;
+        if (!tagId) { ctx.response.body = ResponseService.createErrResponse('TagId not found'); return; }
+        let ret = await NewsService.getRecommand({tagId: tagId});
         ctx.response.body = ResponseService.createJSONResponse(ret);
     } catch (e) {
         ctx.response.body = ResponseService.createErrResponse(e);
