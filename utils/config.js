@@ -12,8 +12,8 @@ var config = {
   // download: 'http://oq7eluo6z.bkt.clouddn.com/'
   download: 'http://orbctx8xa.bkt.clouddn.com/',
 
-  // FRONTEND_URL: 'http://localhost:8080'
-  FRONTEND_URL: 'http://121.42.169.109:9092'
+  FRONTEND_URL: 'http://localhost:8080'
+  // FRONTEND_URL: 'http://121.42.169.109:9092'
 };
 
 module.exports = config;
