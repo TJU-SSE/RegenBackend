@@ -22,11 +22,11 @@ router.get('/getAll', async (ctx, next) => {
 // OK
 router.post('/create', async (ctx, next) => {
     try {
-        let newsId = ctx.request.body.fields.newsId;
+        let newsId = ctx.request.body.newsId;
         if (!newsId) { ctx.response.body = ResponseService.createErrResponse('NewsId not found'); return; }
         let news = await NewsService.findOne({id: newsId});
         if (!news) { ctx.response.body = ResponseService.createErrResponse('News not found'); return; }
-        let rank = ctx.request.body.fields.rank;
+        let rank = ctx.request.body.rank;
         if (!rank) { ctx.response.body = ResponseService.createErrResponse('Rank not found'); return; }
         let ret = await IndexImgService.create(news, rank);
         ctx.response.body = ResponseService.createJSONResponse(ret);
