@@ -27,11 +27,12 @@ router.get('/selectByIdentity/:identity', async (ctx, next) => {
         let identity = ctx.params.identity;
         if (!identity) { ctx.response.body = ResponseService.createErrResponse('Identity not found'); return; }
         let pageOffset = ctx.query.pageOffset || 0;
-        let itemSize = ctx.query.itemSize || 0;
+        let itemSize = ctx.query.itemSize || 20;
         itemSize = parseInt(itemSize);
         pageOffset = parseInt(pageOffset) * parseInt(itemSize);
         let artists = await ArtistService.findAllFilter({'where': {identity: identity}, 'limit': itemSize, 'offset': pageOffset});
         if (!artists) { ctx.response.body = ResponseService.createErrResponse('Artists not found'); return; }
+        console.log('artists...', artists)
         let ret = await ArtistService.createArtistsViewModel(artists, pageOffset, itemSize);
         ctx.response.body = ResponseService.createJSONResponse(ret);
     } catch (e) {

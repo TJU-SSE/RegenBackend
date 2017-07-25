@@ -49,7 +49,7 @@ router.post('/updateRanks', async (ctx, next) => {
 // OK
 router.post('/delete', async (ctx, next) => {
     try {
-        let id = ctx.request.body.newsId;
+        let id = ctx.request.body.newsIndexId;
         if (!id) { ctx.response.body = ResponseService.createErrResponse('Id not found'); return; }
         let indexImg = await IndexImgService.findOne({id: id});
         if (!indexImg) { ctx.response.body = ResponseService.createErrResponse('IndexImg not found'); return; }
