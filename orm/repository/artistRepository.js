@@ -4,6 +4,12 @@ const Qiniu = require('../../utils/qiniu');
 
 let pub = {};
 
+pub.getTotalSize = async (identity) => {
+  return await Artist.count({
+    where: {identity: identity}
+  })
+};
+
 pub.findAll = async () => {
     let res = await Artist.findAll();
     return res;

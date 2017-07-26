@@ -6,6 +6,10 @@ const Qiniu = require('../utils/qiniu');
 
 let pub = {};
 
+pub.getTotalSize = async (identity) => {
+    return await ArtistRepository.getTotalSize(identity)
+};
+
 pub.findOne = async (filter) => {
     return await ArtistRepository.findOne(filter);
 };
@@ -80,9 +84,9 @@ pub.createArtistViewModel = async (artist) => {
     }
 };
 
-pub.createArtistsViewModel = async (artists, pageOffset, itemSize) => {
+pub.createArtistsViewModel = async (artists, pageOffset, itemSize, total) => {
     try {
-        let ret = { pageOffset: pageOffset, itemSize: itemSize, total: artists.length };
+        let ret = { pageOffset: pageOffset, itemSize: itemSize, total: total };
         let list = [];
         for(let x in artists) {
             let artist = artists[x];
