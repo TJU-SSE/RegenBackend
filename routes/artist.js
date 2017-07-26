@@ -22,6 +22,20 @@ router.get('/selectByName/:name', async (ctx, next) => {
 });
 
 // OK
+router.get('/selectById/:id', async (ctx, next) => {
+  try {
+    let id = ctx.params.id;
+    if (!id) { ctx.response.body = ResponseService.createErrResponse('Name not found'); return; }
+    let artist = await ArtistService.findOne({id: id});
+    if (!artist) { ctx.response.body = ResponseService.createErrResponse('Artist not found'); return; }
+    let ret = await ArtistService.createArtistViewModel(artist);
+    ctx.response.body = ResponseService.createJSONResponse(ret);
+  } catch (e) {
+    ctx.response.body = ResponseService.createErrResponse(e);
+  }
+});
+
+// OK
 router.get('/selectByIdentity/:identity', async (ctx, next) => {
     try {
         let identity = ctx.params.identity;
@@ -76,16 +90,16 @@ router.post('/create', async (ctx, next) => {
 // OK
 router.post('/update', async (ctx, next) => {
     try {
-        let id = ctx.request.body.fields.id;
+        let id = ctx.request.body.id;
         if (!id) { ctx.response.body = ResponseService.createErrResponse('Id not found'); return; }
         let artist = await ArtistService.findOne({id: id});
         if (!artist) { ctx.response.body = ResponseService.createErrResponse('Artist not found'); return; }
-        let name = ctx.request.body.fields.name || '';
-        let identity = ctx.request.body.fields.identity || '';
-        let social = ctx.request.body.fields.social || '';
-        let address = ctx.request.body.fields.address || '';
-        let extraBiography = ctx.request.body.fields.extraBiography || '';
-        let biography = ctx.request.body.fields.biography || '';
+        let name = ctx.request.body.name || '';
+        let identity = ctx.request.body.identity || '';
+        let social = ctx.request.body.social || '';
+        let address = ctx.request.body.address || '';
+        let extraBiography = ctx.request.extraBiography || '';
+        let biography = ctx.request.body.biography || '';
         let ret = await ArtistService.update(artist, name, identity, social, address, extraBiography, biography);
         ctx.response.body = ResponseService.createJSONResponse(ret);
     } catch(e) {
