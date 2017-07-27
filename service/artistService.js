@@ -29,7 +29,8 @@ pub.create = async (key, localFile, name, identity, social, address, extraBiogra
             artist = await ArtistRepository.create(name, identity, social, address, extraBiography, biography, img);
         });
         let id = artist.get('id');
-        return {id:id};
+        let img = await artist.getCoverImg();
+        return {id:id, img_url: img.get('url')};
     } catch (e) {
         return e;
     }
@@ -37,10 +38,12 @@ pub.create = async (key, localFile, name, identity, social, address, extraBiogra
 
 pub.updateImg = async (artist, key, localFile) => {
     try {
+        let newImg = null;
         await Qiniu.uploadFile(key, localFile, async function (img) {
             await ArtistRepository.updateImg(artist, img);
+            newImg = img
         });
-        return 'success';
+        return newImg.get('url');
     } catch (e) {
         return e;
     }
