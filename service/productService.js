@@ -1,5 +1,6 @@
 const ProductRepository = require('../orm/repository/productRepository');
 const ProductImgRepository = require('../orm/repository/productImgRepository');
+const ArtistRepository = require('../orm/repository/artistRepository');
 const ProductViewModel = require('../view_model/product');
 const Qiniu = require('../utils/qiniu');
 
@@ -21,6 +22,11 @@ pub.create = async (key, localFile, title, session, releaseTime, introduction) =
         return e;
     }
 };
+
+pub.findAllFilter = async (filter) => {
+    return await ProductRepository.findAllFilter(filter);
+}
+
 
 pub.updateImg = async (product, key, localFile) => {
     try {
@@ -125,7 +131,78 @@ pub.createProductViewModel = async (product) => {
         }
         return ProductViewModel.createProduct(id, title, session, releaseTime, introduction, img_id, img_url, imgs);
     } catch (e) {
-        console.log('123');
+        return e;
+    }
+};
+
+pub.selectWithArtists = async (product) => {
+    try {
+        let id = product.get('id');
+        let title = product.get('title');
+        let session = product.get('session');
+        let releaseTime = product.get('releaseTime');
+        let introduction = product.get('introduction');
+        let img = await product.getCoverImg();
+        let img_id = img.get('id');
+        let img_url = img.get('url');
+        let imgs = [];
+        let productImgs = await product.getProductImgs();
+        for(let x in productImgs) {
+            let productImg = productImgs[x];
+            let img1 = await productImg.getCoverImg();
+            imgs.push({ img_id: img1.get('id'), img_url: img1.get('url') })
+        }
+        let ret = {};
+        ret['product'] = ProductViewModel.createProduct(id, title, session, releaseTime, introduction, img_id, img_url, imgs);
+        let artistProducts = await product.getArtistProducts();
+        let list = [];
+        for (let x in artistProducts) {
+            let artistProduct = artistProducts[x];
+            let artist = await ArtistRepository.findOne({id: artistProduct.get('artistId')});
+            let id = artist.get('id');
+            let name = artist.get('name');
+            let identity = artist.get('identity');
+            let img = await artist.getCoverImg();
+            let img_id = img.get('id');
+            let img_url = img.get('url');
+            list.push({id: id, name: name, identity: identity, img_id: img_id, img_url: img_url});
+        }
+        ret['artists'] = list;
+        return ret;
+    } catch (e) {
+        return e;
+    }
+};
+
+pub.createProductsViewModel = async (products, pageOffset, itemSize) => {
+    try {
+        let total = await ProductRepository.count();
+        let ret = {'pageOffset': pageOffset, 'itemSize': itemSize, 'total': total};
+        let list = [];
+        for (let x in products) {
+            let product = products[x];
+            let id = product.get('id');
+            let title = product.get('title');
+            let session = product.get('session');
+            let releaseTime = product.get('releaseTime');
+            let introduction = product.get('introduction');
+            let img = await product.getCoverImg();
+            let img_id = img.get('id');
+            let img_url = img.get('url');
+            let imgs = [];
+            console.log(x);
+            let productImgs = await product.getProductImgs();
+            console.log(x);
+            for(let x in productImgs) {
+                let productImg = productImgs[x];
+                let img1 = await productImg.getCoverImg();
+                imgs.push({ img_id: img1.get('id'), img_url: img1.get('url') })
+            }
+            list.push(ProductViewModel.createProduct(id, title, session, releaseTime, introduction, img_id, img_url, imgs));
+        }
+        ret['products'] = list;
+        return ret;
+    } catch (e) {
         return e;
     }
 };

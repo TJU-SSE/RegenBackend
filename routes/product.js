@@ -24,6 +24,49 @@ router.get('/select/:id', async (ctx, next) => {
 });
 
 // OK
+router.get('/selectWithArtists/:id', async (ctx, next) => {
+    try {
+        let id = ctx.params.id;
+        if (!id) { ctx.response.body = ResponseService.createErrResponse('Id not found'); return; }
+        let product = await ProductService.findOne({id: id});
+        if (!product) { ctx.response.body = ResponseService.createErrResponse('Product not found'); return; }
+        let ret = await ProductService.selectWithArtists(product);
+        ctx.response.body = ResponseService.createJSONResponse(ret);
+    } catch (e) {
+        ctx.response.body = ResponseService.createErrResponse(e);
+    }
+});
+
+// OK
+router.get('/getAll', async (ctx, next) => {
+    try {
+        let pageOffset = ctx.query.pageOffset || 0;
+        let itemSize = ctx.query.itemSize || 20;
+        itemSize = parseInt(itemSize);
+        pageOffset = parseInt(pageOffset) * parseInt(itemSize);
+        let products = await ProductService.findAllFilter({'limit': itemSize, 'offset': pageOffset});
+        if (!products) { ctx.response.body = ResponseService.createErrResponse('Products not found'); return; }
+        let ret = await ProductService.createProductsViewModel(products, pageOffset, itemSize);
+        ctx.response.body = ResponseService.createJSONResponse(ret);
+    } catch (e) {
+        ctx.response.body = ResponseService.createErrResponse(e);
+    }
+});
+
+// OK
+router.get('/getArtists/:id', async (ctx, next) => {
+    try {
+        let id = ctx.params.id;if (!id) { ctx.response.body = ResponseService.createErrResponse('Id not found'); return; }
+        let product = await ProductService.findOne({id: id});
+        if (!product) { ctx.response.body = ResponseService.createErrResponse('Product not found'); return; }
+        let ret = await ProductService.getArtists(product);
+        ctx.response.body = ResponseService.createJSONResponse(ret);
+    } catch (e) {
+        ctx.response.body = ResponseService.createErrResponse(e);
+    }
+});
+
+// OK
 router.post('/create', async (ctx, next) => {
     try {
         let file = ctx.request.body.files.img;

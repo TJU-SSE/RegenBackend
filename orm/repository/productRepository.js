@@ -10,6 +10,12 @@ pub.findAll = async () => {
     return res;
 };
 
+pub.findAllFilter = async (filter) => {
+    filter['order'] = 'releaseTime DESC';
+    let res = await Product.findAll(filter);
+    return res;
+};
+
 pub.findOne = async (filter) => {
     let res = await Product.findOne({where: filter});
     return res;
@@ -21,6 +27,10 @@ pub.findProductImg = async (product, imgId) => {
             cover_img: imgId
         }
     });
+};
+
+pub.count = async () => {
+    return await Product.count();
 };
 
 pub.create = async (title, session, releaseTime, introduction, img) =>{
