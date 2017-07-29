@@ -120,6 +120,9 @@ pub.createArtistProduct = async (artist, product, rank) => {
 pub.createArtistProductsViewModel = async (artist, pageOffset, itemSize) => {
     try {
         let artistProducts = await ArtistProductRepository.getArtistProducts(artist);
+        artistProducts.sort((a, b) => {
+            return a.get('rank') - b.get('rank')
+        });
         let ret = { pageOffset: pageOffset, itemSize: itemSize, total: artistProducts.length };
         let list = [];
         for(let x = pageOffset * itemSize; x < artistProducts.length && x < pageOffset * itemSize + itemSize; x++) {

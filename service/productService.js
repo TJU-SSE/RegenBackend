@@ -1,5 +1,6 @@
 const ProductRepository = require('../orm/repository/productRepository');
 const ProductImgRepository = require('../orm/repository/productImgRepository');
+const ArtistService = require('../service/artistService');
 const ArtistRepository = require('../orm/repository/artistRepository');
 const ProductViewModel = require('../view_model/product');
 const Qiniu = require('../utils/qiniu');
@@ -30,10 +31,12 @@ pub.findAllFilter = async (filter) => {
 
 pub.updateImg = async (product, key, localFile) => {
     try {
+        let newImg = null;
         await Qiniu.uploadFile(key, localFile, async function (img) {
             await ProductRepository.updateImg(product, img);
+            newImg = img
         });
-        return 'success';
+        return newImg.get('url');
     } catch (e) {
         return e;
     }
@@ -50,10 +53,15 @@ pub.update = async (product, title, session, releaseTime, introduction) => {
 
 pub.addProductImg = async (product, key, localFile) => {
     try {
+        let newImg = null
         await Qiniu.uploadFile(key, localFile, async function (img) {
             await ProductRepository.addProductImg(product, img);
+            newImg = img
         });
-        return 'success';
+        return {
+            img_url: newImg.get('url'),
+            img_id: newImg.get('id')
+        };
     } catch (e) {
         return e;
     }
@@ -174,7 +182,7 @@ pub.selectWithArtists = async (product) => {
     }
 };
 
-pub.createProductsViewModel = async (products, pageOffset, itemSize) => {
+pub.createProductsViewModel = async (products, pageOffset, itemSize, withoutImgs = false) => {
     try {
         let total = await ProductRepository.count();
         let ret = {'pageOffset': pageOffset, 'itemSize': itemSize, 'total': total};
@@ -190,13 +198,15 @@ pub.createProductsViewModel = async (products, pageOffset, itemSize) => {
             let img_id = img.get('id');
             let img_url = img.get('url');
             let imgs = [];
-            console.log(x);
-            let productImgs = await product.getProductImgs();
-            console.log(x);
-            for(let x in productImgs) {
+            if (!withoutImgs) {
+              console.log(x);
+              let productImgs = await product.getProductImgs();
+              console.log(x);
+              for(let x in productImgs) {
                 let productImg = productImgs[x];
                 let img1 = await productImg.getCoverImg();
                 imgs.push({ img_id: img1.get('id'), img_url: img1.get('url') })
+              }
             }
             list.push(ProductViewModel.createProduct(id, title, session, releaseTime, introduction, img_id, img_url, imgs));
         }
@@ -205,6 +215,38 @@ pub.createProductsViewModel = async (products, pageOffset, itemSize) => {
     } catch (e) {
         return e;
     }
+};
+
+pub.createProductsViewModelWithRank = async (products, pageOffset, itemSize, artistId) => {
+  try {
+    let total = await ProductRepository.count();
+    let ret = {'pageOffset': pageOffset, 'itemSize': itemSize, 'total': total};
+    let list = [];
+    for (let x in products) {
+      let product = products[x];
+      let id = product.get('id');
+      let title = product.get('title');
+      let session = product.get('session');
+      let releaseTime = product.get('releaseTime');
+      let introduction = product.get('introduction');
+      let img = await product.getCoverImg();
+      let img_id = img.get('id');
+      let img_url = img.get('url');
+
+      let artistProduct = await ArtistService.findArtistProduct({productId: id, artistId: artistId});
+      let rank = -1;
+      if (artistProduct) {
+          rank = artistProduct.get('rank');
+      }
+      let imgs = [];
+      list.push(ProductViewModel.createProduct(id, title, session, releaseTime, introduction, img_id, img_url, imgs, rank));
+    }
+
+    ret['products'] = list
+    return ret
+  } catch (e) {
+    return e;
+  }
 };
 
 module.exports = pub;

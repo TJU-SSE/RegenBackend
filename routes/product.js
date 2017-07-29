@@ -2,6 +2,7 @@ const router = require('koa-router')();
 
 const ProductService = require('../service/productService');
 const ResponseService = require('../service/responseService');
+const ArtistService = require('../service/artistService');
 
 // pre URL
 router.prefix('/admin/product');
@@ -54,6 +55,38 @@ router.get('/getAll', async (ctx, next) => {
 });
 
 // OK
+router.get('/getAllWithoutImgs', async (ctx, next) => {
+  try {
+    let pageOffset = ctx.query.pageOffset || 0;
+    let itemSize = ctx.query.itemSize || 20;
+    itemSize = parseInt(itemSize);
+    pageOffset = parseInt(pageOffset) * parseInt(itemSize);
+    let products = await ProductService.findAllFilter({'limit': itemSize, 'offset': pageOffset});
+    if (!products) { ctx.response.body = ResponseService.createErrResponse('Products not found'); return; }
+    let ret = await ProductService.createProductsViewModel(products, pageOffset, itemSize, true);
+    ctx.response.body = ResponseService.createJSONResponse(ret);
+  } catch (e) {
+    ctx.response.body = ResponseService.createErrResponse(e);
+  }
+});
+
+router.get('/getAllWithArtistId/:artistId', async (ctx, next) => {
+  try {
+    let artistId = ctx.params.artistId;
+    let pageOffset = ctx.query.pageOffset || 0;
+    let itemSize = ctx.query.itemSize || 20;
+    itemSize = parseInt(itemSize);
+    pageOffset = parseInt(pageOffset) * parseInt(itemSize);
+    let products = await ProductService.findAllFilter({'limit': itemSize, 'offset': pageOffset});
+    if (!products) { ctx.response.body = ResponseService.createErrResponse('Products not found'); return; }
+    let ret = await ProductService.createProductsViewModelWithRank(products, pageOffset, itemSize, artistId);
+    ctx.response.body = ResponseService.createJSONResponse(ret);
+  } catch (e) {
+    ctx.response.body = ResponseService.createErrResponse(e);
+  }
+});
+
+// OK
 router.get('/getArtists/:id', async (ctx, next) => {
     try {
         let id = ctx.params.id;if (!id) { ctx.response.body = ResponseService.createErrResponse('Id not found'); return; }
@@ -101,14 +134,14 @@ router.post('/updateImg',  async (ctx, next) => {
 // OK
 router.post('/update', async (ctx, next) => {
     try {
-        let id = ctx.request.body.fields.id;
+        let id = ctx.request.body.id;
         if (!id) { ctx.response.body = ResponseService.createErrResponse('Id not found'); return; }
         let product = await ProductService.findOne({id: id});
         if (!product) { ctx.response.body = ResponseService.createErrResponse('Product not found'); return; }
-        let title = ctx.request.body.fields.title || '';
-        let session = ctx.request.body.fields.session || '';
-        let releaseTime = ctx.request.body.fields.releaseTime || 0;
-        let introduction = ctx.request.body.fields.introduction || '';
+        let title = ctx.request.body.title || '';
+        let session = ctx.request.body.session || '';
+        let releaseTime = ctx.request.body.releaseTime || 0;
+        let introduction = ctx.request.body.introduction || '';
         let ret = await ProductService.update(product, title, session, releaseTime, introduction);
         ctx.response.body = ResponseService.createJSONResponse(ret);
     } catch(e) {
@@ -150,11 +183,11 @@ router.post('/addProductImgs',  async (ctx, next) => {
 // OK
 router.post('/deleteProductImg',  async (ctx, next) => {
     try {
-        let id = ctx.request.body.fields.id;
+        let id = ctx.request.body.id;
         if (!id) { ctx.response.body = ResponseService.createErrResponse('Id not found'); return; }
         let product = await ProductService.findOne({id: id});
         if (!product) { ctx.response.body = ResponseService.createErrResponse('Product not found'); return; }
-        let imgId = ctx.request.body.fields.img_id;
+        let imgId = ctx.request.body.img_id;
         if (!imgId) { ctx.response.body = ResponseService.createErrResponse('Img Id not found'); return; }
         let productImg = await ProductService.findProductImg(product, imgId);
         if (!productImg) { ctx.response.body = ResponseService.createErrResponse('Img not found'); return; }
