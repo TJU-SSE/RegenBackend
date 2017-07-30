@@ -1,6 +1,7 @@
 const Product = require('../model/product');
 const ProductImgRepository = require('./productImgRepository');
 const ArtistProductRepository = require('./artistProductRepository');
+const AchievementRepository = require('./achievementRepository');
 const Qiniu = require('../../utils/qiniu');
 
 let pub = {};
@@ -79,6 +80,11 @@ pub.deleteOne = async (filter) => {
         for (let x in articleProducts) {
             let articleProduct = articleProducts[x];
             await ArtistProductRepository.delete(articleProduct);
+        }
+        let achievements = await product.getAchievements();
+        for (let x in achievements) {
+            let achievement = achievements[x];
+            await AchievementRepository.delete(achievement);
         }
         await product.destroy();
     }

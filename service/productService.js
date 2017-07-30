@@ -155,10 +155,22 @@ pub.selectWithArtists = async (product) => {
         let ret = {};
         ret['product'] = ProductViewModel.createProduct(id, title, session, releaseTime, introduction, img_id, img_url, imgs);
         let artistProducts = await product.getArtistProducts();
+        let achievements = await product.getAchievements();
         let list = [];
         for (let x in artistProducts) {
             let artistProduct = artistProducts[x];
             let artist = await ArtistRepository.findOne({id: artistProduct.get('artistId')});
+            let id = artist.get('id');
+            let name = artist.get('name');
+            let identity = artist.get('identity');
+            let img = await artist.getCoverImg();
+            let img_id = img.get('id');
+            let img_url = img.get('url');
+            list.push({id: id, name: name, identity: identity, img_id: img_id, img_url: img_url});
+        }
+        for (let x in achievements) {
+            let achievement = achievements[x];
+            let artist = await ArtistRepository.findOne({id: achievement.get('artistId')});
             let id = artist.get('id');
             let name = artist.get('name');
             let identity = artist.get('identity');

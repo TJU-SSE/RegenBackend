@@ -7,6 +7,7 @@ const Product = require('./model/product');
 const ProductImg = require('./model/productImg');
 const Artist = require('./model/artist');
 const ArtistProduct = require('./model/atristProduct');
+const Achievement = require('./model/achievement');
 const IndexImg = require('./model/indexImg');
 const NewsTag = require('./model/newsTag');
 const Tag = require('./model/tag');
@@ -34,6 +35,10 @@ function syncAll() {
 
     ArtistProduct.sync().then(function () {
         console.log("create artist_product success");
+    });
+
+    Achievement.sync().then(function () {
+        console.log("create achievement success");
     });
 
     ProductImg.sync().then(function () {
@@ -71,6 +76,8 @@ let init = function () {
     Product.hasMany(ProductImg, {as: 'ProductImgs'});
     Product.hasMany(ArtistProduct, {as: 'ArtistProducts'});
     Artist.hasMany(ArtistProduct, {as: 'ArtistProducts'});
+    Product.hasMany(Achievement, {as: 'Achievements'});
+    Artist.hasMany(Achievement, {as: 'Achievements'});
     Artist.belongsTo(Img, { foreignKey: 'cover_img', as: 'coverImg'});
     IndexImg.belongsTo(News, { foreignKey: 'news_id', as: 'news'});
     News.hasMany(NewsTag, {as: 'NewsTags'});
