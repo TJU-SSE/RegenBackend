@@ -17,6 +17,8 @@ const product = require('./routes/product');
 const artist = require('./routes/artist');
 const indexImg = require('./routes/indexImg');
 const tag = require('./routes/tag');
+const worker = require('./routes/worker');
+const contact = require('./routes/contact');
 const redis = require('./routes/redis');
 
 const checkAuthority = require('./middleware/authority');
@@ -80,6 +82,8 @@ app.use(product.routes(), product.allowedMethods());
 app.use(artist.routes(), artist.allowedMethods());
 app.use(indexImg.routes(), indexImg.allowedMethods());
 app.use(tag.routes(), tag.allowedMethods());
+app.use(worker.routes(), worker.allowedMethods());
+app.use(contact.routes(), contact.allowedMethods());
 // app.use(redis.routes(), redis.allowedMethods());
 
 

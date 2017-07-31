@@ -11,8 +11,10 @@ const Achievement = require('./model/achievement');
 const IndexImg = require('./model/indexImg');
 const NewsTag = require('./model/newsTag');
 const Tag = require('./model/tag');
+const Worker = require('./model/worker');
+const Contact = require('./model/contact');
 
-function syncAll() {
+let syncAll = async () => {
     Img.sync().then(function () {
         console.log("create img success");
     });
@@ -64,9 +66,21 @@ function syncAll() {
     NewsTag.sync().then(function () {
         console.log("create news_tag success");
     });
+
+    Worker.sync().then(function () {
+        console.log("create worker success");
+    });
+
+    Contact.sync().then(async () => {
+        let contact = await Contact.findOne({id:1});
+        if (!contact) {
+            Contact.create({id: 1});
+        }
+        console.log("create worker success");
+    });
 }
 
-let init = function () {
+let init = async () => {
 
     // Img.hasOne(News, { foreignKey: 'cover_img' });
     // Img.hasOne(News, { foreignKey: 'cover_img'});
@@ -82,10 +96,10 @@ let init = function () {
     IndexImg.belongsTo(News, { foreignKey: 'news_id', as: 'news'});
     News.hasMany(NewsTag, {as: 'NewsTags'});
     Tag.hasMany(NewsTag, {as: 'NewsTags'});
-    syncAll();
+    Worker.belongsTo(Img, { foreignKey: 'cover_img', as: 'coverImg'});
+    Contact.belongsTo(Img, { foreignKey: 'cover_img', as: 'coverImg'});
+    await syncAll();
 };
 
 
 module.exports = init;
-
-// 标题、时间、作者、正文、封面图片、TAG
