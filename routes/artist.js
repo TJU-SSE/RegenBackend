@@ -207,8 +207,8 @@ router.get('/selectArticleProductById/:id', async (ctx, next) => {
     if (!id) { ctx.response.body = ResponseService.createErrResponse('Id not found'); return; }
     let artist = await ArtistService.findOne({id: id});
     if (!artist) { ctx.response.body = ResponseService.createErrResponse('Artist not found'); return; }
-    let pageOffset = ctx.query.pageOffset || 0;
-    let itemSize = ctx.query.itemSize || 20;
+    let pageOffset = parseInt(ctx.query.pageOffset)  || 0;
+    let itemSize = parseInt(ctx.query.itemSize) || 20;
     let ret = await ArtistService.createArtistProductsViewModel(artist, pageOffset, itemSize);
     ctx.response.body = ResponseService.createJSONResponse(ret);
   } catch (e) {

@@ -41,7 +41,7 @@ pub.createAchievements = function (achievementId, rank, productId, title, sessio
     }
 };
 
-pub.c = function (artistProductId, rank, productId, title, session, releaseTime, introduction, img_id, img_url) {
+pub.createArtistProducts = function (artistProductId, rank, productId, title, session, releaseTime, introduction, img_id, img_url) {
     return {
         artistProductId: artistProductId,
         rank: rank,
