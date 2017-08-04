@@ -3,6 +3,7 @@ const router = require('koa-router')();
 const ProductService = require('../service/productService');
 const ResponseService = require('../service/responseService');
 const ArtistService = require('../service/artistService');
+const config = require('../utils/config')
 
 // pre URL
 router.prefix('/admin/product');
@@ -80,6 +81,23 @@ router.get('/getAllWithArtistId/:artistId', async (ctx, next) => {
     let products = await ProductService.findAllFilter({'limit': itemSize, 'offset': pageOffset});
     if (!products) { ctx.response.body = ResponseService.createErrResponse('Products not found'); return; }
     let ret = await ProductService.createProductsViewModelWithRank(products, pageOffset, itemSize, artistId);
+    ctx.response.body = ResponseService.createJSONResponse(ret);
+  } catch (e) {
+    ctx.response.body = ResponseService.createErrResponse(e);
+  }
+});
+
+router.get('/getAllWithArtistIdAchievement/:artistId', async (ctx, next) => {
+  try {
+    let artistId = ctx.params.artistId;
+    let pageOffset = ctx.query.pageOffset || 0;
+    let itemSize = ctx.query.itemSize || 20;
+    itemSize = parseInt(itemSize);
+    pageOffset = parseInt(pageOffset) * parseInt(itemSize);
+    let products = await ProductService.findAllFilter({'limit': itemSize, 'offset': pageOffset});
+    if (!products) { ctx.response.body = ResponseService.createErrResponse('Products not found'); return; }
+    let ret = await ProductService.createProductsViewModelWithRank(products, pageOffset, itemSize, artistId,
+      config.ARTIST_PRODUCT_TYPES.ACHIEVEMENT);
     ctx.response.body = ResponseService.createJSONResponse(ret);
   } catch (e) {
     ctx.response.body = ResponseService.createErrResponse(e);

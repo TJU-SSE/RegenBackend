@@ -4,6 +4,7 @@ const ArtistService = require('../service/artistService');
 const ArtistRepository = require('../orm/repository/artistRepository');
 const ProductViewModel = require('../view_model/product');
 const Qiniu = require('../utils/qiniu');
+const config = require('../utils/config')
 
 let pub = {};
 
@@ -229,7 +230,8 @@ pub.createProductsViewModel = async (products, pageOffset, itemSize, withoutImgs
     }
 };
 
-pub.createProductsViewModelWithRank = async (products, pageOffset, itemSize, artistId) => {
+pub.createProductsViewModelWithRank = async (products, pageOffset, itemSize, artistId,
+                                             type = config.ARTIST_PRODUCT_TYPES.UPDATE) => {
   try {
     let total = await ProductRepository.count();
     let ret = {'pageOffset': pageOffset, 'itemSize': itemSize, 'total': total};
@@ -245,7 +247,12 @@ pub.createProductsViewModelWithRank = async (products, pageOffset, itemSize, art
       let img_id = img.get('id');
       let img_url = img.get('url');
 
-      let artistProduct = await ArtistService.findArtistProduct({productId: id, artistId: artistId});
+      let artistProduct = null;
+      if (type === config.ARTIST_PRODUCT_TYPES.UPDATE) {
+          artistProduct = await ArtistService.findArtistProduct({productId: id, artistId: artistId});
+      } else if (type === config.ARTIST_PRODUCT_TYPES.ACHIEVEMENT) {
+          artistProduct = await ArtistService.findAchievement({productId: id, artistId: artistId})
+      }
       let rank = -1;
       if (artistProduct) {
           rank = artistProduct.get('rank');

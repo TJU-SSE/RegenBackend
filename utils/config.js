@@ -12,6 +12,11 @@ var config = {
   // download: 'http://oq7eluo6z.bkt.clouddn.com/'
   download: 'http://orbctx8xa.bkt.clouddn.com/',
 
+  ARTIST_PRODUCT_TYPES: {
+    UPDATE: 0,
+    ACHIEVEMENT: 1
+  },
+
   FRONTEND_URL: 'http://localhost:9092'
   // FRONTEND_URL: 'http://121.42.169.109:9092'
 };
