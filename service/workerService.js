@@ -100,6 +100,7 @@ pub.createWorkersViewModel = async (workers, pageOffset, itemSize, total) => {
                 name: name,
                 email: email,
                 rank: rank,
+                identity: worker.get('identity'),
                 img_id: img_id,
                 img_url: img_url
             })

@@ -36,6 +36,7 @@ pub.update = async (phone, photography, fax, address, link, social) => {
         if(address) contact.address = address;
         if(link) contact.link = link;
         if(social) contact.social = social;
+        if(desc) contact.desc = desc;
         await contact.save();
         return 'success';
     } catch (e) {
