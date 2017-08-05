@@ -17,8 +17,8 @@ var config = {
     ACHIEVEMENT: 1
   },
 
-  FRONTEND_URL: 'http://localhost:9092'
-  // FRONTEND_URL: 'http://121.42.169.109:9092'
+  // FRONTEND_URL: 'http://localhost:9092'
+  FRONTEND_URL: 'http://121.42.169.109:9092'
 };
 
 module.exports = config;
