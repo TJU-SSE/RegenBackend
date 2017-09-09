@@ -32,6 +32,7 @@ router.post('/create', async (ctx, next) => {
         let content = ctx.request.body.fields.content || '';
         let time = ctx.request.body.fields.time || '';
         let tags = ctx.request.body.fields.tags || [];
+        if (!Array.isArray(tags)) tags = [tags];
         let timestamp = Date.parse(new Date());
         let ret = await NewsService.create(timestamp, file.path, title, writer, content, time, tags);
         ctx.response.body = ResponseService.createJSONResponse(ret);
@@ -82,6 +83,7 @@ router.post('/update', async (ctx, next) => {
         let content = ctx.request.body.content;
         let time = ctx.request.body.time;
         let tags = ctx.request.body.tags;
+        if (!Array.isArray(tags)) tags = [tags];
         let ret = await NewsService.update(news, title, writer, content, time, tags);
         ctx.response.body = ResponseService.createJSONResponse(ret);
     } catch(e) {
