@@ -1,6 +1,7 @@
 const News = require('../model/news');
 const NewsTagRepository = require('./newsTagRepository');
 const TagRepository = require('./tagRepository');
+const IndexImgRepository = require('./indexImgRepository');
 const Qiniu = require('../../utils/qiniu');
 
 let pub = {};
@@ -77,6 +78,7 @@ pub.deleteOne = async (filter) => {
             let newsTag = newsTags[x];
             await newsTag.destroy();
         }
+        await IndexImgRepository.deleteOne({news_id:news.get('id')});
         await news.destroy();
     }
 };
