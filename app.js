@@ -62,11 +62,7 @@ app.use(async (ctx, next) => {
 
 // cors
 app.use(cors({
-  origin: function (ctx) {
-    console.log(ctx.header.host)
-    var index = config.FRONTEND_URLS.indexOf(ctx.header.host);
-    return index === -1 ? config.FRONTEND_URLS[0] : config.FRONTEND_URLS[index];
-  },
+  origin: config.FRONTEND_URL,
   exposeHeaders: ['WWW-Authenticate', 'Server-Authorization', 'Date'],
   maxAge: 100,
   credentials: true,
