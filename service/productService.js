@@ -27,8 +27,11 @@ pub.create = async (key, localFile, title, session, releaseTime, introduction) =
 
 pub.findAllFilter = async (filter) => {
     return await ProductRepository.findAllFilter(filter);
-}
+};
 
+pub.search = async (key, filter) => {
+    return await ProductRepository.search(key, filter);
+};
 
 pub.updateImg = async (product, key, localFile) => {
     try {

@@ -17,6 +17,17 @@ pub.findAllFilter = async (filter) => {
     return res;
 };
 
+pub.search = async (key, filter) => {
+    filter['where'] = {
+        title: {
+            $like: '%' + key + '%'
+        }
+    };
+    filter['order'] = 'releaseTime DESC';
+    let res = await Product.findAll(filter);
+    return res;
+};
+
 pub.findOne = async (filter) => {
     let res = await Product.findOne({where: filter});
     return res;

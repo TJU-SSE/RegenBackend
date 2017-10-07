@@ -26,6 +26,24 @@ router.get('/select/:id', async (ctx, next) => {
 });
 
 // OK
+router.get('/search/:key', async (ctx, next) => {
+    try {
+        let key = ctx.params.key;
+        if (!key) { ctx.response.body = ResponseService.createErrResponse('key not found'); return; }
+        let pageOffset = ctx.query.pageOffset || 0;
+        let itemSize = ctx.query.itemSize || 20;
+        itemSize = parseInt(itemSize);
+        pageOffset = parseInt(pageOffset) * parseInt(itemSize);
+        let products = await ProductService.search(key, {'limit': itemSize, 'offset': pageOffset});
+        if (!products) { ctx.response.body = ResponseService.createErrResponse('Products not found'); return; }
+        let ret = await ProductService.createProductsViewModel(products, pageOffset, itemSize);
+        ctx.response.body = ResponseService.createJSONResponse(ret);
+    } catch (e) {
+        ctx.response.body = ResponseService.createErrResponse(e);
+    }
+});
+
+// OK
 router.get('/selectWithArtists/:id', async (ctx, next) => {
     try {
         let id = ctx.params.id;
