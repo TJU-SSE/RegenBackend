@@ -34,9 +34,11 @@ router.get('/search/:key', async (ctx, next) => {
         let itemSize = ctx.query.itemSize || 20;
         itemSize = parseInt(itemSize);
         pageOffset = parseInt(pageOffset) * parseInt(itemSize);
-        let products = await ProductService.search(key, {'limit': itemSize, 'offset': pageOffset});
+        let result = await ProductService.search(key, {'limit': itemSize, 'offset': pageOffset});
+        let products = result.rows;
+        let count = result.count;
         if (!products) { ctx.response.body = ResponseService.createErrResponse('Products not found'); return; }
-        let ret = await ProductService.createProductsViewModel(products, pageOffset, itemSize);
+        let ret = await ProductService.createProductsViewModel(products, pageOffset, itemSize, false, count);
         ctx.response.body = ResponseService.createJSONResponse(ret);
     } catch (e) {
         ctx.response.body = ResponseService.createErrResponse(e);

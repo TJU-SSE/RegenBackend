@@ -15,8 +15,22 @@ router.get('/getAll', async (ctx, next) => {
         pageOffset = parseInt(pageOffset) * parseInt(itemSize);
         let total = await NewsService.getTotalSize();
         let newses = await NewsService.findAll({'limit': itemSize, 'offset': pageOffset});
-
         let ret = await NewsService.createNewsesViewModel(newses, pageOffset, itemSize, total);
+        ctx.response.body = ResponseService.createJSONResponse(ret);
+    } catch (e) {
+        ctx.response.body = ResponseService.createErrResponse(e);
+    }
+});
+
+router.get('/search/:title', async (ctx, next) => {
+    try {
+        title = ctx.params.title;
+        if (!title) { ctx.response.body = ResponseService.createErrResponse('Title not found'); return; }
+        let newses = await NewsService.findAll({
+            where: {title: {'$like': '%'+title+'%'}},
+            'order': 'time DESC'
+        });
+        let ret = await NewsService.createNewsesViewModelWithoutPage(newses);
         ctx.response.body = ResponseService.createJSONResponse(ret);
     } catch (e) {
         ctx.response.body = ResponseService.createErrResponse(e);

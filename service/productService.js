@@ -198,9 +198,9 @@ pub.selectWithArtists = async (product) => {
     }
 };
 
-pub.createProductsViewModel = async (products, pageOffset, itemSize, withoutImgs = false) => {
+pub.createProductsViewModel = async (products, pageOffset, itemSize, withoutImgs = false, count = null) => {
     try {
-        let total = await ProductRepository.count();
+        let total = count !== null ? count : await ProductRepository.count();
         let ret = {'pageOffset': pageOffset, 'itemSize': itemSize, 'total': total};
         let list = [];
         for (let x in products) {
@@ -215,9 +215,7 @@ pub.createProductsViewModel = async (products, pageOffset, itemSize, withoutImgs
             let img_url = img.get('url');
             let imgs = [];
             if (!withoutImgs) {
-              console.log(x);
               let productImgs = await product.getProductImgs();
-              console.log(x);
               for(let x in productImgs) {
                 let productImg = productImgs[x];
                 let img1 = await productImg.getCoverImg();

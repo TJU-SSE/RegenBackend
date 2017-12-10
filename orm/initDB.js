@@ -9,6 +9,7 @@ const Artist = require('./model/artist');
 const ArtistProduct = require('./model/atristProduct');
 const Achievement = require('./model/achievement');
 const IndexImg = require('./model/indexImg');
+const IndexProduct = require('./model/indexProduct');
 const NewsTag = require('./model/newsTag');
 const Tag = require('./model/tag');
 const Worker = require('./model/worker');
@@ -59,6 +60,10 @@ let syncAll = async () => {
         console.log("create index_img success");
     });
 
+    IndexProduct.sync().then(function () {
+        console.log("create index_product success");
+    });
+
     Tag.sync().then(function () {
         console.log("create tag success");
     });
@@ -78,7 +83,7 @@ let syncAll = async () => {
         }
         console.log("create worker success");
     });
-}
+};
 
 let init = async () => {
 
@@ -94,6 +99,7 @@ let init = async () => {
     Artist.hasMany(Achievement, {as: 'Achievements'});
     Artist.belongsTo(Img, { foreignKey: 'cover_img', as: 'coverImg'});
     IndexImg.belongsTo(News, { foreignKey: 'news_id', as: 'news'});
+    IndexProduct.belongsTo(Product, { foreignKey: 'product_id', as: 'product'});
     News.hasMany(NewsTag, {as: 'NewsTags'});
     Tag.hasMany(NewsTag, {as: 'NewsTags'});
     Worker.belongsTo(Img, { foreignKey: 'cover_img', as: 'coverImg'});

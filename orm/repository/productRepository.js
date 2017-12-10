@@ -24,7 +24,7 @@ pub.search = async (key, filter) => {
         }
     };
     filter['order'] = 'releaseTime DESC';
-    let res = await Product.findAll(filter);
+    let res = await Product.findAndCountAll(filter);
     return res;
 };
 
