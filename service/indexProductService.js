@@ -1,4 +1,6 @@
 const IndexProductRepository = require('../orm/repository/indexProductRepository');
+const ProductTagRepository = require('../orm/repository/productTagRepository');
+const TagRepository = require('../orm/repository/tagRepository');
 const IndexProductViewModel = require('../view_model/indexProduct');
 
 let pub = {};
@@ -9,6 +11,10 @@ pub.findOne = async (filter) => {
 
 pub.findAll = async () => {
     return await IndexProductRepository.findAll();
+};
+
+pub.getTotalSize = async () => {
+    return await IndexProductRepository.getTotalSize();
 };
 
 pub.create = async (news, rank) => {
@@ -49,6 +55,34 @@ pub.updateRanks = async (ranks) => {
     }
 };
 
+pub.getIndexProductsByTag = async (findTagTitle, pageOffset, itemSize) => {
+    try {
+        let indexProducts = await pub.findAll();
+        let tagIndexProducts = [];
+        for (let x in indexProducts) {
+            let indexProduct = indexProducts[x];
+            let id = indexProduct.get('id');
+            let product = await indexProduct.getProduct();
+            let productTags = await product.getProductTags();
+            for (let x in productTags) {
+                let productTag = productTags[x];
+                let tagId = productTag.get('tagId');
+                let tag = await TagRepository.findOne({id: tagId});
+                let tagTitle = tag.get('title');
+                if (tagTitle == findTagTitle) {
+                    tagIndexProducts.push(indexProduct);
+                    break;
+                }
+            }
+        }
+        let total = tagIndexProducts.length;
+        tagIndexProducts = tagIndexProducts.slice(pageOffset, pageOffset + itemSize);
+        return pub.createIndexProductsViewModel(tagIndexProducts, pageOffset, itemSize, total);
+    } catch (e) {
+        return e;
+    }
+};
+
 pub.deleteIndexProducts = async (indexProductIds) => {
     try {
         for(let x in indexProductIds) {
@@ -73,9 +107,10 @@ pub.createIndexProductViewModel = async (indexProduct) => {
 
 };
 
-pub.createIndexProductsViewModel = async (indexProducts) => {
+pub.createIndexProductsViewModel = async (indexProducts, pageOffset, itemSize, total) => {
     try {
-        let ret = [];
+        let ret = { pageOffset: pageOffset, itemSize: itemSize, total: total };
+        let list = [];
         for (let x in indexProducts) {
             let indexProduct = indexProducts[x];
             let id = indexProduct.get('id');
@@ -96,11 +131,21 @@ pub.createIndexProductsViewModel = async (indexProducts) => {
                 let img1 = await productImg.getCoverImg();
                 imgs.push({ img_id: img1.get('id'), img_url: img1.get('url') })
             }
-            ret.push(IndexProductViewModel.createIndexProductsViewModel(id, product_id, title, session, releaseTime, introduction, img_id, img_url, imgs, rank));
+            let productTags = await product.getProductTags();
+            let tags = [];
+            for (let x in productTags) {
+                let productTag = productTags[x];
+                let tagId = productTag.get('tagId');
+                let tag = await TagRepository.findOne({id: tagId});
+                let tagTitle = tag.get('title');
+                tags.push(tagTitle);
+            }
+            list.push(IndexProductViewModel.createIndexProductsViewModel(id, product_id, title, session, releaseTime, introduction, img_id, img_url, imgs, tags, rank));
         }
-        return ret.sort((a, b) => {
+        ret['list'] = list.sort((a, b) => {
             return a.rank - b.rank;
         });
+        return ret;
     } catch (e) {
         return e;
     }

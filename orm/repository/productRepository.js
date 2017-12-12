@@ -2,7 +2,10 @@ const Product = require('../model/product');
 const ProductImgRepository = require('./productImgRepository');
 const ArtistProductRepository = require('./artistProductRepository');
 const AchievementRepository = require('./achievementRepository');
+const ProductTagRepository = require('./productTagRepository');
+const IndexProductRepository = require('./indexProductRepository');
 const Qiniu = require('../../utils/qiniu');
+var TagRepository = require("./tagRepository.js");
 
 let pub = {};
 
@@ -45,9 +48,17 @@ pub.count = async () => {
     return await Product.count();
 };
 
-pub.create = async (title, session, releaseTime, introduction, img) =>{
+pub.create = async (title, session, releaseTime, introduction, img, tags) =>{
     let product = await Product.create({ title: title, session: session, releaseTime: releaseTime, introduction: introduction});
     product.setCoverImg(img);
+    let productTags = [];
+    for (let x in tags) {
+        let tagTitle = tags[x];
+        let tag = await TagRepository.findOrCreate(tagTitle);
+        let productTag = await ProductTagRepository.create(product, tag);
+        productTags.push(productTag);
+    }
+    await product.setProductTags(productTags);
     return product;
 };
 
@@ -69,11 +80,26 @@ pub.deleteProductImg = async (productImg) =>{
     await ProductImgRepository.delete(productImg);
 };
 
-pub.update = async (product, title, session, releaseTime, introduction) => {
+pub.update = async (product, title, session, releaseTime, introduction, tags) => {
     if (title) product.title = title;
     if (session) product.session = session;
     if (releaseTime) product.releaseTime = releaseTime;
     if (introduction) product.introduction = introduction;
+    if(tags) {
+        let oldTags = await product.getProductTags();
+        for (let x in oldTags) {
+            let productTag = oldTags[x];
+            await ProductTagRepository.delete(productTag);
+        }
+        let productTags = [];
+        for (let x in tags) {
+            let tagTitle = tags[x];
+            let tag = await TagRepository.findOrCreate(tagTitle);
+            let productTag = await ProductTagRepository.create(product, tag);
+            productTags.push(productTag);
+        }
+        await product.setProductTags(productTags);
+    }
     await product.save();
 };
 
@@ -97,6 +123,12 @@ pub.deleteOne = async (filter) => {
             let achievement = achievements[x];
             await AchievementRepository.delete(achievement);
         }
+        let productTags = await product.getProductTags();
+        for (let x in productTags) {
+            let productTag = productTags[x];
+            await productTag.destroy();
+        }
+        await IndexProductRepository.deleteOne({product_id:product.get('id')});
         await product.destroy();
     }
 };

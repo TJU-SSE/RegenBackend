@@ -145,8 +145,10 @@ router.post('/create', async (ctx, next) => {
         let session = ctx.request.body.fields.session || '';
         let releaseTime = ctx.request.body.fields.releaseTime || 0;
         let introduction = ctx.request.body.fields.introduction || '';
+        let tags = ctx.request.body.fields.tags || [];
+        if (!Array.isArray(tags)) tags = [tags];
         let timestamp = Date.parse(new Date());
-        let ret = await ProductService.create(timestamp, file.path, title, session, releaseTime, introduction);
+        let ret = await ProductService.create(timestamp, file.path, title, session, releaseTime, introduction, tags);
         ctx.response.body = ResponseService.createJSONResponse(ret);
     } catch (e) {
         ctx.response.body = ResponseService.createErrResponse(e);
@@ -180,7 +182,9 @@ router.post('/update', async (ctx, next) => {
         let session = ctx.request.body.session || '';
         let releaseTime = ctx.request.body.releaseTime || 0;
         let introduction = ctx.request.body.introduction || '';
-        let ret = await ProductService.update(product, title, session, releaseTime, introduction);
+        let tags = ctx.request.body.tags;
+        if (!Array.isArray(tags)) tags = [tags];
+        let ret = await ProductService.update(product, title, session, releaseTime, introduction, tags);
         ctx.response.body = ResponseService.createJSONResponse(ret);
     } catch(e) {
         ctx.response.body = ResponseService.createErrResponse(e);

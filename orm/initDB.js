@@ -11,6 +11,7 @@ const Achievement = require('./model/achievement');
 const IndexImg = require('./model/indexImg');
 const IndexProduct = require('./model/indexProduct');
 const NewsTag = require('./model/newsTag');
+const ProductTag = require('./model/productTag');
 const Tag = require('./model/tag');
 const Worker = require('./model/worker');
 const Contact = require('./model/contact');
@@ -72,6 +73,10 @@ let syncAll = async () => {
         console.log("create news_tag success");
     });
 
+    ProductTag.sync().then(function () {
+        console.log("create product_tag success");
+    });
+
     Worker.sync().then(function () {
         console.log("create worker success");
     });
@@ -102,6 +107,8 @@ let init = async () => {
     IndexProduct.belongsTo(Product, { foreignKey: 'product_id', as: 'product'});
     News.hasMany(NewsTag, {as: 'NewsTags'});
     Tag.hasMany(NewsTag, {as: 'NewsTags'});
+    Product.hasMany(ProductTag, {as: 'ProductTags'});
+    Tag.hasMany(ProductTag, {as: 'ProductTags'});
     Worker.belongsTo(Img, { foreignKey: 'cover_img', as: 'coverImg'});
     Contact.belongsTo(Img, { foreignKey: 'cover_img', as: 'coverImg'});
     await syncAll();

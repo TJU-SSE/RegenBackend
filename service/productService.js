@@ -1,10 +1,11 @@
 const ProductRepository = require('../orm/repository/productRepository');
 const ProductImgRepository = require('../orm/repository/productImgRepository');
+const TagRepository = require('../orm/repository/tagRepository');
 const ArtistService = require('../service/artistService');
 const ArtistRepository = require('../orm/repository/artistRepository');
 const ProductViewModel = require('../view_model/product');
 const Qiniu = require('../utils/qiniu');
-const config = require('../utils/config')
+const config = require('../utils/config');
 
 let pub = {};
 
@@ -12,11 +13,11 @@ pub.findOne = async (filter) => {
     return await ProductRepository.findOne(filter);
 };
 
-pub.create = async (key, localFile, title, session, releaseTime, introduction) => {
+pub.create = async (key, localFile, title, session, releaseTime, introduction, tags) => {
     try {
         let product = null;
         await Qiniu.uploadFile(key, localFile, async function (img) {
-            product = await ProductRepository.create(title, session, releaseTime, introduction, img);
+            product = await ProductRepository.create(title, session, releaseTime, introduction, img, tags);
         });
         let id = product.get('id');
         return {id: id};
@@ -46,9 +47,9 @@ pub.updateImg = async (product, key, localFile) => {
     }
 };
 
-pub.update = async (product, title, session, releaseTime, introduction) => {
+pub.update = async (product, title, session, releaseTime, introduction, tags) => {
     try {
-        await ProductRepository.update(product, title, session, releaseTime, introduction);
+        await ProductRepository.update(product, title, session, releaseTime, introduction, tags);
         return 'success';
     } catch (e) {
         return e;
@@ -141,7 +142,16 @@ pub.createProductViewModel = async (product) => {
             let img1 = await productImg.getCoverImg();
             imgs.push({ img_id: img1.get('id'), img_url: img1.get('url') })
         }
-        return ProductViewModel.createProduct(id, title, session, releaseTime, introduction, img_id, img_url, imgs);
+        let productTags = await product.getProductTags();
+        let tags = [];
+        for (let x in productTags) {
+            let productTag = productTags[x];
+            let tagId = productTag.get('tagId');
+            let tag = await TagRepository.findOne({id: tagId});
+            let tagTitle = tag.get('title');
+            tags.push(tagTitle);
+        }
+        return ProductViewModel.createProduct(id, title, session, releaseTime, introduction, img_id, img_url, imgs, tags);
     } catch (e) {
         return e;
     }
@@ -164,8 +174,17 @@ pub.selectWithArtists = async (product) => {
             let img1 = await productImg.getCoverImg();
             imgs.push({ img_id: img1.get('id'), img_url: img1.get('url') })
         }
+        let productTags = await product.getProductTags();
+        let tags = [];
+        for (let x in productTags) {
+            let productTag = productTags[x];
+            let tagId = productTag.get('tagId');
+            let tag = await TagRepository.findOne({id: tagId});
+            let tagTitle = tag.get('title');
+            tags.push(tagTitle);
+        }
         let ret = {};
-        ret['product'] = ProductViewModel.createProduct(id, title, session, releaseTime, introduction, img_id, img_url, imgs);
+        ret['product'] = ProductViewModel.createProduct(id, title, session, releaseTime, introduction, img_id, img_url, imgs, tags);
         let artistProducts = await product.getArtistProducts();
         let achievements = await product.getAchievements();
         let list = [];
@@ -222,7 +241,17 @@ pub.createProductsViewModel = async (products, pageOffset, itemSize, withoutImgs
                 imgs.push({ img_id: img1.get('id'), img_url: img1.get('url') })
               }
             }
-            list.push(ProductViewModel.createProduct(id, title, session, releaseTime, introduction, img_id, img_url, imgs));
+            let productTags = await product.getProductTags();
+            let tags = [];
+            for (let x in productTags) {
+                let productTag = productTags[x];
+                let tagId = productTag.get('tagId');
+                let tag = await TagRepository.findOne({id: tagId});
+                let tagTitle = tag.get('title');
+                tags.push(tagTitle);
+            }
+            console.log(4);
+            list.push(ProductViewModel.createProduct(id, title, session, releaseTime, introduction, img_id, img_url, imgs, tags));
         }
         ret['products'] = list;
         return ret;
@@ -259,11 +288,12 @@ pub.createProductsViewModelWithRank = async (products, pageOffset, itemSize, art
           rank = artistProduct.get('rank');
       }
       let imgs = [];
-      list.push(ProductViewModel.createProduct(id, title, session, releaseTime, introduction, img_id, img_url, imgs, rank));
+      let tags = [];
+      list.push(ProductViewModel.createProduct(id, title, session, releaseTime, introduction, img_id, img_url, imgs, tags, rank));
     }
 
-    ret['products'] = list
-    return ret
+    ret['products'] = list;
+    return ret;
   } catch (e) {
     return e;
   }

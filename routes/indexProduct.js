@@ -11,8 +11,29 @@ router.prefix('/admin/indexProduct');
 // OK
 router.get('/getAll', async (ctx, next) => {
     try {
-        let indexProducts = await IndexProductService.findAll();
-        let ret = await IndexProductService.createIndexProductsViewModel(indexProducts);
+        let pageOffset = ctx.query.pageOffset || 0;
+        let itemSize = ctx.query.itemSize || 20;
+        itemSize = parseInt(itemSize);
+        pageOffset = parseInt(pageOffset) * parseInt(itemSize);
+        let total = await IndexProductService.getTotalSize();
+        let indexProducts = await IndexProductService.findAll({'limit': itemSize, 'offset': pageOffset});
+        let ret = await IndexProductService.createIndexProductsViewModel(indexProducts, pageOffset, itemSize, total);
+        ctx.response.body = ResponseService.createJSONResponse(ret);
+    } catch (e) {
+        ctx.response.body = ResponseService.createErrResponse(e);
+    }
+});
+
+// OK
+router.get('/getAll/:tag', async (ctx, next) => {
+    try {
+        let tag = ctx.params.tag;
+        if (!tag) { ctx.response.body = ResponseService.createErrResponse('tag not found'); return; }
+        let pageOffset = ctx.query.pageOffset || 0;
+        let itemSize = ctx.query.itemSize || 20;
+        itemSize = parseInt(itemSize);
+        pageOffset = parseInt(pageOffset) * parseInt(itemSize);
+        let ret = await IndexProductService.getIndexProductsByTag(tag, pageOffset, itemSize);
         ctx.response.body = ResponseService.createJSONResponse(ret);
     } catch (e) {
         ctx.response.body = ResponseService.createErrResponse(e);

@@ -17,6 +17,10 @@ pub.findOne = async (filter) => {
     return res;
 };
 
+pub.getTotalSize = async () => {
+    return await IndexProduct.count()
+};
+
 pub.create = async (news, rank) =>{
     let indexImg = await IndexProduct.create({rank: rank});
     indexImg.setProduct(news);
