@@ -1,7 +1,7 @@
 const router = require('koa-router')();
 
 const IndexProductService = require('../service/indexProductService');
-const ProductService = require('../service/ProductService');
+const ProductService = require('../service/productService');
 const ResponseService = require('../service/responseService');
 
 // pre URL
