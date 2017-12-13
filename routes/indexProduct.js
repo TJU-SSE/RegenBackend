@@ -25,15 +25,16 @@ router.get('/getAll', async (ctx, next) => {
 });
 
 // OK
-router.get('/getAll/:tag', async (ctx, next) => {
+router.get('/getAll/tags', async (ctx, next) => {
     try {
-        let tag = ctx.params.tag;
-        if (!tag) { ctx.response.body = ResponseService.createErrResponse('tag not found'); return; }
+        let tags = ctx.query.tag || [];
+        if (!Array.isArray(tags)) tags = [tags];
+        if (tags.length == 0) { ctx.response.body = ResponseService.createErrResponse('tags not found'); return; }
         let pageOffset = ctx.query.pageOffset || 0;
         let itemSize = ctx.query.itemSize || 20;
         itemSize = parseInt(itemSize);
         pageOffset = parseInt(pageOffset) * parseInt(itemSize);
-        let ret = await IndexProductService.getIndexProductsByTag(tag, pageOffset, itemSize);
+        let ret = await IndexProductService.getIndexProductsByTags(tags, pageOffset, itemSize);
         ctx.response.body = ResponseService.createJSONResponse(ret);
     } catch (e) {
         ctx.response.body = ResponseService.createErrResponse(e);

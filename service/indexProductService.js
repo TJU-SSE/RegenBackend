@@ -55,7 +55,7 @@ pub.updateRanks = async (ranks) => {
     }
 };
 
-pub.getIndexProductsByTag = async (findTagTitle, pageOffset, itemSize) => {
+pub.getIndexProductsByTags = async (tags, pageOffset, itemSize) => {
     try {
         let indexProducts = await pub.findAll();
         let tagIndexProducts = [];
@@ -64,15 +64,20 @@ pub.getIndexProductsByTag = async (findTagTitle, pageOffset, itemSize) => {
             let id = indexProduct.get('id');
             let product = await indexProduct.getProduct();
             let productTags = await product.getProductTags();
+            let find = false;
             for (let x in productTags) {
                 let productTag = productTags[x];
                 let tagId = productTag.get('tagId');
                 let tag = await TagRepository.findOne({id: tagId});
                 let tagTitle = tag.get('title');
-                if (tagTitle == findTagTitle) {
-                    tagIndexProducts.push(indexProduct);
-                    break;
+                for (let y in tags) {
+                    if (tagTitle == tags[y]) {
+                        tagIndexProducts.push(indexProduct);
+                        find = true;
+                        break;
+                    }
                 }
+                if (find) break;
             }
         }
         let total = tagIndexProducts.length;
