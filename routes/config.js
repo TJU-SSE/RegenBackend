@@ -25,9 +25,7 @@ router.post('/footerLink', async (ctx, next) => {
         let content = ctx.request.body.content;
         if (!content) { ctx.response.body = ResponseService.createErrResponse('Content not found'); return; }
         await ConfigRepository.update('footer_link', content);
-        let ret = {
-            'success'
-        };
+        let ret = 'success';
         ctx.response.body = ResponseService.createJSONResponse(ret);
     } catch (e) {
         ctx.response.body = ResponseService.createErrResponse(e);
