@@ -20,6 +20,7 @@ const indexProduct = require('./routes/indexProduct');
 const tag = require('./routes/tag');
 const worker = require('./routes/worker');
 const contact = require('./routes/contact');
+const config_api = require('./routes/config');
 const redis = require('./routes/redis');
 
 const checkAuthority = require('./middleware/authority');
@@ -86,6 +87,7 @@ app.use(indexProduct.routes(), indexProduct.allowedMethods());
 app.use(tag.routes(), tag.allowedMethods());
 app.use(worker.routes(), worker.allowedMethods());
 app.use(contact.routes(), contact.allowedMethods());
+app.use(config_api.routes(), config_api.allowedMethods());
 // app.use(redis.routes(), redis.allowedMethods());
 
 

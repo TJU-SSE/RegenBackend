@@ -15,6 +15,7 @@ const ProductTag = require('./model/productTag');
 const Tag = require('./model/tag');
 const Worker = require('./model/worker');
 const Contact = require('./model/contact');
+const Config = require('./model/config');
 
 let syncAll = async () => {
     Img.sync().then(function () {
@@ -81,12 +82,16 @@ let syncAll = async () => {
         console.log("create worker success");
     });
 
+    Config.sync().then(function () {
+        console.log("create config success");
+    });
+
     Contact.sync().then(async () => {
         let contact = await Contact.findOne({id:1});
         if (!contact) {
             Contact.create({id: 1});
         }
-        console.log("create worker success");
+        console.log("create contact success");
     });
 };
 
