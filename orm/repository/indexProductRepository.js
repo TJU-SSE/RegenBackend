@@ -8,7 +8,7 @@ pub.findAll = async () => {
 };
 
 pub.findAllFilter = async (filter) => {
-    let res = await IndexProduct.findAll({where: filter});
+    let res = await IndexProduct.findAll(filter);
     return res;
 };
 

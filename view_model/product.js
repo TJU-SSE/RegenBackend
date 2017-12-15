@@ -1,7 +1,7 @@
 let pub = {};
 
-pub.createProduct = function (id, title, session, releaseTime, introduction, img_id, img_url, imgs, tags = [], rank = -1) {
-    console.log(id, title, session, releaseTime, introduction, img_id, img_url, imgs);
+pub.createProduct = function (id, title, session, releaseTime, introduction, img_id, img_url, imgs, tags = [], rank = -1, index = null) {
+    console.log(id, title, session, releaseTime, introduction, img_id, img_url, imgs, index);
     return {
         id: id,
         title: title,
@@ -12,7 +12,8 @@ pub.createProduct = function (id, title, session, releaseTime, introduction, img
         img_url: img_url,
         imgs: imgs,
         rank: rank,
-        tags: tags
+        tags: tags,
+        index
     };
 };
 

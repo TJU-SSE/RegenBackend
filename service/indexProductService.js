@@ -9,8 +9,8 @@ pub.findOne = async (filter) => {
     return await IndexProductRepository.findOne(filter);
 };
 
-pub.findAll = async () => {
-    return await IndexProductRepository.findAll();
+pub.findAll = async (filter) => {
+    return await IndexProductRepository.findAllFilter(filter);
 };
 
 pub.getTotalSize = async () => {
