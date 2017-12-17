@@ -96,7 +96,7 @@ router.post('/update', async (ctx, next) => {
         let writer = ctx.request.body.writer;
         let content = ctx.request.body.content;
         let time = ctx.request.body.time;
-        let tags = ctx.request.body.tags;
+        let tags = ctx.request.body.tags || [];
         if (!Array.isArray(tags)) tags = [tags];
         let ret = await NewsService.update(news, title, writer, content, time, tags);
         ctx.response.body = ResponseService.createJSONResponse(ret);
@@ -122,6 +122,7 @@ router.get('/recommand/:tagId', async (ctx, next) => {
         let tagId = ctx.params.tagId;
         if (!tagId) { ctx.response.body = ResponseService.createErrResponse('TagId not found'); return; }
         let ret = await NewsService.getRecommand({tagId: tagId});
+        console.log('news', ret)
         ctx.response.body = ResponseService.createJSONResponse(ret);
     } catch (e) {
         ctx.response.body = ResponseService.createErrResponse(e);
