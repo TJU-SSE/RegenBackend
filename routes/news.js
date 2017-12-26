@@ -128,6 +128,18 @@ router.get('/recommand/:tagId', async (ctx, next) => {
     }
 });
 
+
+router.get('/recommandNews/:newsId', async (ctx, next) => {
+    try {
+        let newsId = ctx.params.newsId;
+        if (!newsId) { ctx.response.body = ResponseService.createErrResponse('NewsId not found'); return; }
+        let ret = await NewsService.getRecommandNews(newsId);
+        ctx.response.body = ResponseService.createJSONResponse(ret);
+    } catch (e) {
+        ctx.response.body = ResponseService.createErrResponse(e);
+    }
+});
+
 module.exports = router;
 
 // x-www-form-urlencoded -> body.xx;

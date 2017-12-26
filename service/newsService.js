@@ -189,4 +189,45 @@ pub.getRecommand = async function (filter) {
     }
 };
 
+pub.getRecommandNews = async function (newsId) {
+    try {
+        let newsTags = await NewsTagRepository.findAllFilter({newsId: newsId});
+        let tags = [];
+        for (let i in newsTags) {
+            tags[newsTags[i].get('tagId')]++;
+        }
+        let newsIds = [];
+        for(let tagId in tags) {
+            let findNewsTags = await NewsTagRepository.findAllFilter({tagId: tagId});
+            for (let i in findNewsTags) {
+                if (findNewsTags[i].get('newsId') != newsId) {
+                    if (!newsIds[findNewsTags[i].get('newsId')])
+                        newsIds[findNewsTags[i].get('newsId')] = {
+                            'key': findNewsTags[i].get('newsId'),
+                            'value': 1
+                        };
+                    else
+                        newsIds[findNewsTags[i].get('newsId')].value++;
+                }
+            }
+        }
+        newsIds.sort((a, b) => {
+            return a.value < b.value;
+        });
+        let newsIdss = [];
+        let count = 0;
+        for(let i in newsIds) {
+            newsIdss.push(newsIds[i].key);
+            count++;
+            if (count > 6) break;
+        }
+        let newses = await NewsRepository.findAll(
+            {'where':{'id':{'$in':newsIdss}}}
+        );
+        return await pub.createNewsesViewModelWithoutPage(newses);
+    } catch (e) {
+        return e;
+    }
+};
+
 module.exports = pub;
