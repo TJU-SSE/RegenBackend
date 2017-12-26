@@ -155,10 +155,13 @@ pub.getRecommand = async function (filter) {
         for (let i in findNewsTags) {
             let newsId = findNewsTags[i].get('newsId');
             let news1 = await NewsRepository.findOne({id:newsId});
-            newses.push(news1);
+            if (news1) {
+              newses.push(news1);
+            }
         }
+        console.log(newses)
         newses.sort((a, b) => {
-            return b.time - a.time;
+            return b.get('time') - a.get('time');
         });
         let ret = [];
         for (let x in newses) {

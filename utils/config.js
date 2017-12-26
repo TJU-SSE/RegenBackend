@@ -18,7 +18,7 @@ var config = {
   },
 
   // FRONTEND_URLS: ['http://localhost:9092', 'http://121.42.169.109:9092']
-  FRONTEND_URL: 'http://121.42.169.109:9092'
+  FRONTEND_URL: 'http://regen.org.cn/'
 };
 
 module.exports = config;

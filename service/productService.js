@@ -4,6 +4,7 @@ const TagRepository = require('../orm/repository/tagRepository');
 const ArtistService = require('../service/artistService');
 const ArtistRepository = require('../orm/repository/artistRepository');
 const ProductViewModel = require('../view_model/product');
+const IndexProductRepository = require('../orm/repository/indexProductRepository');
 const Qiniu = require('../utils/qiniu');
 const config = require('../utils/config');
 
@@ -151,7 +152,21 @@ pub.createProductViewModel = async (product) => {
             let tagTitle = tag.get('title');
             tags.push(tagTitle);
         }
-        return ProductViewModel.createProduct(id, title, session, releaseTime, introduction, img_id, img_url, imgs, tags);
+
+        const indexProduct = await IndexProductRepository.findOne({product_id: id});
+        console.log('indexProduct', indexProduct)
+        let index = {
+            id: -1,
+            rank: 0
+        };
+        if (indexProduct) {
+            index = {
+                id: indexProduct.get('id'),
+                rank: indexProduct.get('rank')
+            }
+        }
+
+        return ProductViewModel.createProduct(id, title, session, releaseTime, introduction, img_id, img_url, imgs, tags, -1, index);
     } catch (e) {
         return e;
     }
@@ -250,8 +265,20 @@ pub.createProductsViewModel = async (products, pageOffset, itemSize, withoutImgs
                 let tagTitle = tag.get('title');
                 tags.push(tagTitle);
             }
-            console.log(4);
-            list.push(ProductViewModel.createProduct(id, title, session, releaseTime, introduction, img_id, img_url, imgs, tags));
+
+            const indexProduct = await IndexProductRepository.findOne({product_id: id});
+            let index = {
+                id: -1,
+                rank: 0
+            };
+            if (indexProduct) {
+                index = {
+                  id: indexProduct.get('id'),
+                  rank: indexProduct.get('rank')
+                }
+            }
+
+            list.push(ProductViewModel.createProduct(id, title, session, releaseTime, introduction, img_id, img_url, imgs, tags, -1, index));
         }
         ret['products'] = list;
         return ret;

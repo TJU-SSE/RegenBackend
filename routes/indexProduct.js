@@ -29,6 +29,7 @@ router.get('/getAll/tags', async (ctx, next) => {
     try {
         let tags = ctx.query.tag || [];
         if (!Array.isArray(tags)) tags = [tags];
+        console.log('tags', tags)
         if (tags.length == 0) { ctx.response.body = ResponseService.createErrResponse('tags not found'); return; }
         let pageOffset = ctx.query.pageOffset || 0;
         let itemSize = ctx.query.itemSize || 20;
