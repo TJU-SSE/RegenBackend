@@ -232,7 +232,7 @@ pub.selectWithArtists = async (product) => {
     }
 };
 
-pub.createProductsViewModel = async (products, pageOffset, itemSize, withoutImgs = false, count = null) => {
+pub.createProductsViewModel = async (products, pageOffset, itemSize, withoutImgs = false, count = null, artistId = null, type = 0) => {
     try {
         let total = count !== null ? count : await ProductRepository.count();
         let ret = {'pageOffset': pageOffset, 'itemSize': itemSize, 'total': total};
@@ -278,7 +278,22 @@ pub.createProductsViewModel = async (products, pageOffset, itemSize, withoutImgs
                 }
             }
 
-            list.push(ProductViewModel.createProduct(id, title, session, releaseTime, introduction, img_id, img_url, imgs, tags, -1, index));
+            let rank = -1;
+            if (artistId) {
+                let artistProduct;
+                if (type === config.ARTIST_PRODUCT_TYPES.UPDATE) {
+                    artistProduct = await ArtistService.findArtistProduct({productId: id, artistId: artistId});
+                    console.log('ARTIST_PRODUCT_TYPES')
+                } else if (type === config.ARTIST_PRODUCT_TYPES.ACHIEVEMENT) {
+                    artistProduct = await ArtistService.findAchievement({productId: id, artistId: artistId})
+                  console.log('ARTIST_PRODUCT_TYPES achi')
+                }
+                if (artistProduct) {
+                    rank = artistProduct.get('rank');
+                }
+            }
+
+            list.push(ProductViewModel.createProduct(id, title, session, releaseTime, introduction, img_id, img_url, imgs, tags, rank, index));
         }
         ret['products'] = list;
         return ret;
