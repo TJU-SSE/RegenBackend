@@ -16,14 +16,15 @@ pub.createArtist = function (id, name, identity, social, address, extraBiography
     };
 };
 
-pub.createArtistBrief = function (id, name, identity, img_id, img_url) {
+pub.createArtistBrief = function (id, name, identity, img_id, img_url, role) {
     console.log(id, name, identity, img_id, img_url);
     return {
         id: id,
         name: name,
         identity: identity,
         img_id: img_id,
-        img_url: img_url
+        img_url: img_url,
+        role
     };
 };
 

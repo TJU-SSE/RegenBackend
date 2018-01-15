@@ -104,7 +104,8 @@ pub.createArtistsViewModel = async (artists, pageOffset, itemSize, total) => {
             let img = await artist.getCoverImg();
             let img_id = img.get('id');
             let img_url = img.get('url');
-            list.push(ArtistViewModel.createArtistBrief(id, name, identity, img_id, img_url))
+            const biography = JSON.parse(artist.get('biography')) || {};
+            list.push(ArtistViewModel.createArtistBrief(id, name, identity, img_id, img_url, biography.role))
         }
         ret['artists'] = list;
         return ret;
