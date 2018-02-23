@@ -8,7 +8,12 @@ pub.findAll = async () => {
 };
 
 pub.findAllFilter = async (filter) => {
-    let res = await IndexProduct.findAll(filter);
+    let res = await IndexProduct.findAll({
+      ...filter,
+      order: [
+        ['rank']
+      ]
+    });
     return res;
 };
 
