@@ -10,9 +10,9 @@ qiniu.conf.SECRET_KEY = conf.SECRET_KEY;
 let _uploadFile = async function(key, localFile, callback, res) {
     key += '';
     var putPolicy = new qiniu.rs.PutPolicy(conf.bucket + ":" + key);
+    console.log(conf.bucket);
     var token = putPolicy.token();
     var extra = new qiniu.io.PutExtra();
-    console.log(key + ' ' + localFile);
     await qiniu.io.putFile(token, key, localFile, extra, async function(err, ret) {
         if (!err) {
             let url = conf.download + ret.key;

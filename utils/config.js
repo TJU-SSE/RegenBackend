@@ -5,8 +5,8 @@ var config = {
   host: '212.64.17.49',
   port: 3306,
   dialect: 'mysql',
-  ACCESS_KEY: '3ZUTdXYFVHSP3i1xr0b28YiT5zpPr2J7XGtAnNUa',
-  SECRET_KEY: 'EjeAdfnjLX6Ij9TT7eVQoDpvxpAuz6lYHtFACNzH',
+  ACCESS_KEY: 'opKzqbb_E-y_yKjCufAu8KOiBzlhMXH2G-EXuKVj',
+  SECRET_KEY: 'b6pyxBh1o8PCNALdlihIZv54wOxqrbxVohrRLQPH',
   bucket: 'infotest',
   filePath: '../img/',
   // download: 'http://oq7eluo6z.bkt.clouddn.com/'
