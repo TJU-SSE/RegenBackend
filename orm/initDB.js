@@ -15,6 +15,7 @@ const ProductTag = require('./model/productTag');
 const Tag = require('./model/tag');
 const Worker = require('./model/worker');
 const Contact = require('./model/contact');
+const Message = require('./model/message');
 const Config = require('./model/config');
 
 let syncAll = async () => {
@@ -81,6 +82,10 @@ let syncAll = async () => {
     Worker.sync().then(function () {
         console.log("create worker success");
     });
+
+    Message.sync().then( function () {
+        console.log("create message success");
+    })
 
     Config.sync().then(function () {
         console.log("create config success");

@@ -12,6 +12,12 @@ var config = {
   // download: 'http://oq7eluo6z.bkt.clouddn.com/'
   download: 'http://pc0bksa0g.bkt.clouddn.com/',
 
+  mail_host: 'smtp.sina.com',
+  mail_user: 'regeneration_ms@sina.com',
+  mail_password: 'regeneration_ms',
+
+  mail_to: ['1061152718@qq.com', 'kenneth0875@gmail.com'],
+
 
   ARTIST_PRODUCT_TYPES: {
     UPDATE: 0,
