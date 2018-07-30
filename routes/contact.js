@@ -19,8 +19,7 @@ router.get('/getall', async (ctx, next) => {
 // OK
 router.get('/get', async (ctx, next) => {
     try {
-        let id = ctx.request.body.id || '';
-        let ret = await ContactRepository.get(id);
+        let ret = await ContactRepository.get();
         ctx.response.body = ResponseService.createJSONResponse(ret);
     } catch(e) {
         ctx.response.body = ResponseService.createErrResponse(e);
