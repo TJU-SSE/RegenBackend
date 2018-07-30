@@ -16,7 +16,7 @@ var config = {
   mail_user: 'regeneration_ms@sina.com',
   mail_password: 'regeneration_ms',
 
-  mail_to: ['1061152718@qq.com', 'kenneth0875@gmail.com'],
+  mail_to: ['1061152718@qq.com', 'kenneth0875@gmail.com', '942740938@qq.com'],
 
 
   ARTIST_PRODUCT_TYPES: {
