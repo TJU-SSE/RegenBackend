@@ -29,18 +29,18 @@ let _uploadFile = async function(key, localFile, callback, res) {
 };
 
 let _deleteFile = async function (img, res) {
-    // var client = new qiniu.rs.Client();
-    // var bucket = conf.bucket;
-    // var key = img.get('id') + '';
-    // console.log(key);
-    // client.remove(bucket, key, async function(err, ret) {
-    //     if (!err) {
-    //         await ImgRepository.deleteOne(img);
-    //         res();
-    //     } else {
-    //         console.log(err);
-    //     }
-    // });
+    var client = new qiniu.rs.Client();
+    var bucket = conf.bucket;
+    var key = img.get('id') + '';
+    console.log(key);
+    client.remove(bucket, key, async function(err, ret) {
+        if (!err) {
+            await ImgRepository.deleteOne(img);
+            res();
+        } else {
+            console.log(err);
+        }
+    });
 };
 
 pub.uploadFile = async (key, localFile, callback) => {
@@ -52,11 +52,11 @@ pub.uploadFile = async (key, localFile, callback) => {
 };
 
 pub.deleteFile = async (img) => {
-    // await new Promise((resolve, reject) => {
-    //     _deleteFile(img, async function () {
-    //         resolve();
-    //     });
-    // });
+    await new Promise((resolve, reject) => {
+        _deleteFile(img, async function () {
+            resolve();
+        });
+    });
 };
 
 module.exports = pub;
