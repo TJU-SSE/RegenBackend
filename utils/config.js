@@ -11,7 +11,7 @@ var config = {
   filePath: '../img/',
   // download: 'http://oq7eluo6z.bkt.clouddn.com/'
   // download: 'http://pc0bksa0g.bkt.clouddn.com/',
-  download: 'http://ovwnlb7r9.bkt.clouddn.com/',
+  download: 'http://cdn.regeneration.cn/',
 
   mail_host: 'smtp.sina.com',
   mail_user: 'regeneration_ms@sina.com',
@@ -30,3 +30,4 @@ var config = {
 };
 
 module.exports = config;
+
